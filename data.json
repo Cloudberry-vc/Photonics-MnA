@@ -756,7 +756,8 @@
       "yr": 2026,
       "v": 1250000,
       "sector": "AI",
-      "reason": "Excluded: not a photonics deal. SpaceX/xAI merger skews photonics M&A aggregate data.",
+      "status": "IGNORED",
+      "reason": "Not a photonics deal. SpaceX/xAI merger skews photonics M&A aggregate data.",
       "regulators": []
     },
     {
@@ -768,6 +769,7 @@
       "yr": 2020,
       "v": 40000,
       "sector": "CPU/AI IP",
+      "status": "BLOCKED",
       "reason": "Blocked by UK CMA, US FTC, and EU regulators over competition and national security concerns. Would have transferred the world's most critical chip IP architecture to US control.",
       "regulators": [
         "UK CMA",
