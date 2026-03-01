@@ -230,6 +230,7 @@
 
         /* Recharts dark overrides */
         .recharts-default-tooltip { background-color: #1F2937 !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 8px !important; color: #E5E7EB !important; }
+        .recharts-tooltip-total { border-top: 1px solid rgba(255,255,255,0.15); margin-top: 6px; padding-top: 6px; font-weight: 600; color: #F9FAFB; font-size: 14px; }
 
         /* Responsive */
         @media (max-width: 1024px) {
@@ -397,6 +398,32 @@
             labelStyle: { color: '#F9FAFB' },
             itemStyle: { color: '#E5E7EB' }
         };
+        // Tooltip total injection via MutationObserver
+        const injectTooltipTotals = () => {
+            let tid = 0;
+            const update = () => {
+                document.querySelectorAll('.recharts-default-tooltip').forEach(tip => {
+                    const items = tip.querySelectorAll('.recharts-tooltip-item');
+                    if (!items.length) { const old = tip.querySelector('.recharts-tooltip-total'); if (old) old.remove(); return; }
+                    let sum = 0;
+                    items.forEach(item => {
+                        const val = item.querySelector('.recharts-tooltip-item-value');
+                        if (val) sum += parseFloat(val.textContent.replace(/[,$]/g, '')) || 0;
+                    });
+                    const isValue = tip.closest('.recharts-wrapper')?.parentElement?.parentElement?.querySelector('.card-header')?.textContent?.includes('Value');
+                    let totalEl = tip.querySelector('.recharts-tooltip-total');
+                    if (!totalEl) {
+                        totalEl = document.createElement('div');
+                        totalEl.className = 'recharts-tooltip-total';
+                        const list = tip.querySelector('.recharts-tooltip-item-list');
+                        if (list) list.appendChild(totalEl);
+                    }
+                    totalEl.textContent = 'Total : ' + (isValue ? '$' : '') + Math.round(sum).toLocaleString();
+                });
+            };
+            new MutationObserver(() => { clearTimeout(tid); tid = setTimeout(update, 50); })
+                .observe(document.body, { childList: true, subtree: true, characterData: true });
+        };
         const DARK_GRID = { strokeDasharray: '3 3', stroke: 'rgba(255,255,255,0.08)' };
         const DARK_XAXIS = { stroke: '#6B7280', tick: { fill: '#9CA3AF', fontSize: 12 } };
         const DARK_YAXIS = { stroke: '#6B7280', tick: { fill: '#9CA3AF', fontSize: 12 } };
@@ -550,23 +577,27 @@
                         h('div', { className: 'card-header' }, 'Deal Volume Trend'),
                         h(ResponsiveContainer, { width: '100%', height: 320 },
                             h(BarChart, { data: data.yearDataWithTotals },
-                                h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS), h(Tooltip, DARK_TOOLTIP), h(Legend, null),
+                                h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS),
+                                h(Tooltip, DARK_TOOLTIP),
+                                h(Legend, null),
                                 h(Bar, { dataKey: 'USA', stackId: 'a', fill: CHART_COLORS.usa }),
                                 h(Bar, { dataKey: 'Europe', stackId: 'a', fill: CHART_COLORS.europe }),
                                 h(Bar, { dataKey: 'Asia', stackId: 'a', fill: CHART_COLORS.asia }),
-                                h(Bar, { dataKey: 'Other', stackId: 'a', fill: CHART_COLORS.other })
-                            )
+                                h(Bar, { dataKey: 'Other', stackId: 'a', fill: CHART_COLORS.other }),
+                                                            )
                         )
                     ),
                     h('div', { className: 'card' },
                         h('div', { className: 'card-header' }, 'Disclosed Deal Value Trend ($M)'),
                         h(ResponsiveContainer, { width: '100%', height: 320 },
                             h(BarChart, { data: data.yearValueDataWithTotals },
-                                h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS), h(Tooltip, DARK_TOOLTIP), h(Legend, null),
+                                h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS),
+                                h(Tooltip, DARK_TOOLTIP),
+                                h(Legend, null),
                                 h(Bar, { dataKey: 'USA', stackId: 'a', fill: CHART_COLORS.usa }),
                                 h(Bar, { dataKey: 'Europe', stackId: 'a', fill: CHART_COLORS.europe }),
-                                h(Bar, { dataKey: 'Asia', stackId: 'a', fill: CHART_COLORS.asia })
-                            )
+                                h(Bar, { dataKey: 'Asia', stackId: 'a', fill: CHART_COLORS.asia }),
+                                                            )
                         )
                     )
                 ),
@@ -776,10 +807,25 @@
                     h('div', { className: 'card-header' }, 'Deal Count by Year (Stacked)'),
                     h(ResponsiveContainer, { width: '100%', height: 320 },
                         h(BarChart, { data: data.yearDataWithTotals },
-                            h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS), h(Tooltip, DARK_TOOLTIP), h(Legend, null),
+                            h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS),
+                            h(Tooltip, DARK_TOOLTIP),
+                            h(Legend, null),
                             h(Bar, { dataKey: 'USA', stackId: 'a', fill: CHART_COLORS.usa }), h(Bar, { dataKey: 'Europe', stackId: 'a', fill: CHART_COLORS.europe }),
-                            h(Bar, { dataKey: 'Asia', stackId: 'a', fill: CHART_COLORS.asia }), h(Bar, { dataKey: 'Other', stackId: 'a', fill: CHART_COLORS.other })
-                        )
+                            h(Bar, { dataKey: 'Asia', stackId: 'a', fill: CHART_COLORS.asia }), h(Bar, { dataKey: 'Other', stackId: 'a', fill: CHART_COLORS.other }),
+                                                    )
+                    )
+                ),
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Disclosed Deal Value by Year ($M)'),
+                    h(ResponsiveContainer, { width: '100%', height: 320 },
+                        h(BarChart, { data: data.yearValueDataWithTotals },
+                            h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS),
+                            h(Tooltip, DARK_TOOLTIP),
+                            h(Legend, null),
+                            h(Bar, { dataKey: 'USA', stackId: 'a', fill: CHART_COLORS.usa }),
+                            h(Bar, { dataKey: 'Europe', stackId: 'a', fill: CHART_COLORS.europe }),
+                            h(Bar, { dataKey: 'Asia', stackId: 'a', fill: CHART_COLORS.asia }),
+                                                    )
                     )
                 ),
                 h('div', { className: 'card' },
@@ -1174,6 +1220,7 @@
         // Render
         const root = createRoot(document.getElementById('root'));
         root.render(h(App));
+        injectTooltipTotals();
     </script>
 </body>
 </html>
