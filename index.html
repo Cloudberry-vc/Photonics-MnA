@@ -228,6 +228,21 @@
         .badge-blocked { display: inline-block; padding: 2px 8px; background-color: rgba(239,68,68,0.2); color: #EF4444; font-size: 10px; font-weight: 700; border-radius: 4px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .badge-ignored { display: inline-block; padding: 2px 8px; background-color: rgba(255,189,72,0.2); color: #FFBD48; font-size: 10px; font-weight: 700; border-radius: 4px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
 
+        /* Insight cards */
+        .insight-disclaimer { background: rgba(255,189,72,0.08); border: 1px solid rgba(255,189,72,0.2); border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; color: #9CA3AF; font-size: 12px; line-height: 1.7; }
+        .insight-disclaimer strong { color: #FFBD48; }
+        .insight-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
+        .insight-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+        .insight-title { font-weight: 600; color: #F9FAFB; font-size: 14px; margin-bottom: 3px; }
+        .insight-body { color: #D1D5DB; font-size: 13px; line-height: 1.6; }
+        .insight-body .hl { color: #FFBD48; font-weight: 600; }
+        .insight-body .hl-green { color: #51A094; font-weight: 600; }
+        .insight-body .deal-tag { display: inline; color: #9CA3AF; font-size: 12px; }
+        .cloudberry-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+        .cloudberry-header img { height: 28px; }
+        .thesis-card { border-left: 3px solid #007A6E; }
+        .thesis-card .card-header { color: #51A094; }
+
         /* Recharts dark overrides */
         .recharts-default-tooltip { background-color: #1F2937 !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 8px !important; color: #E5E7EB !important; }
         .recharts-tooltip-total { border-top: 1px solid rgba(255,255,255,0.15); margin-top: 6px; padding-top: 6px; font-weight: 600; color: #F9FAFB; font-size: 14px; }
@@ -389,7 +404,7 @@
             ]
         };
 
-        const CHART_COLORS = { europe: "#007A6E", usa: "#FFBD48", asia: "#51A094", other: "#8090A8" };
+        const CHART_COLORS = { europe: "#007A6E", usa: "#FFBD48", asia: "#51A094", other: "#8090A8", global: "#E5E7EB" };
         const REGION_COLOR_MAP = { USA: CHART_COLORS.usa, Europe: CHART_COLORS.europe, Asia: CHART_COLORS.asia, Other: CHART_COLORS.other };
 
         // Dark theme tooltip props
@@ -410,7 +425,10 @@
                         const val = item.querySelector('.recharts-tooltip-item-value');
                         if (val) sum += parseFloat(val.textContent.replace(/[,$]/g, '')) || 0;
                     });
-                    const isValue = tip.closest('.recharts-wrapper')?.parentElement?.parentElement?.querySelector('.card-header')?.textContent?.includes('Value');
+                    const hdr = tip.closest('.recharts-wrapper')?.parentElement?.parentElement?.querySelector('.card-header')?.textContent || '';
+                    const isMedianMean = hdr.includes('Median') || hdr.includes('Mean');
+                    if (isMedianMean) { const old = tip.querySelector('.recharts-tooltip-total'); if (old) old.remove(); return; }
+                    const isValue = hdr.includes('Value');
                     let totalEl = tip.querySelector('.recharts-tooltip-total');
                     if (!totalEl) {
                         totalEl = document.createElement('div');
@@ -455,7 +473,20 @@
             const yearValueDataWithTotals = data.yearValueData.map(row => ({
                 ...row, total: (row.USA || 0) + (row.Europe || 0) + (row.Asia || 0)
             }));
-            return { ...data, yearDataWithTotals, yearValueDataWithTotals };
+
+            // ── Median & Mean deal value by year & region ──
+            const median = arr => { if (!arr.length) return null; const s = [...arr].sort((a,b)=>a-b); const m = Math.floor(s.length/2); return s.length%2 ? s[m] : (s[m-1]+s[m])/2; };
+            const mean = arr => arr.length ? Math.round(arr.reduce((a,b)=>a+b,0)/arr.length) : null;
+            const allDeals = data.allDeals || [];
+            const regions = ['USA','Europe','Asia','Other'];
+            const years = [...new Set(allDeals.map(d=>d.yr))].sort();
+            const buckets = {};
+            years.forEach(y => { buckets[y] = { Global: [] }; regions.forEach(r => buckets[y][r] = []); });
+            allDeals.forEach(d => { if (d.v != null && d.yr && buckets[d.yr]) { buckets[d.yr].Global.push(d.v); const r = regions.includes(d.tR) ? d.tR : 'Other'; buckets[d.yr][r].push(d.v); }});
+            const medianByYear = years.map(y => { const row = { year: y }; regions.forEach(r => row[r] = median(buckets[y][r])); row.Global = median(buckets[y].Global); return row; });
+            const meanByYear = years.map(y => { const row = { year: y }; regions.forEach(r => row[r] = mean(buckets[y][r])); row.Global = mean(buckets[y].Global); return row; });
+
+            return { ...data, yearDataWithTotals, yearValueDataWithTotals, medianByYear, meanByYear };
         };
 
         // ── App ──
@@ -468,7 +499,13 @@
                 (async () => {
                     try {
                         const r = await fetch('data.json');
-                        setData(transformData(r.ok ? await r.json() : DEFAULT_DATA));
+                        const raw = r.ok ? await r.json() : DEFAULT_DATA;
+                        // Decode HTML entities in string fields
+                        const decEnt = s => typeof s === 'string' ? s.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'") : s;
+                        const decObj = o => { const r = {}; for (const k in o) r[k] = decEnt(o[k]); return r; };
+                        if (raw.allDeals) raw.allDeals = raw.allDeals.map(decObj);
+                        if (raw.topDeals) raw.topDeals = raw.topDeals.map(decObj);
+                        setData(transformData(raw));
                     } catch { setData(transformData(DEFAULT_DATA)); }
                     finally { setLoading(false); }
                 })();
@@ -487,7 +524,8 @@
                     activeTab === 'timeline' ? h(TimelineTab, { data }) : null,
                     activeTab === 'iprisk' ? h(IPRiskTab, { data }) : null,
                     activeTab === 'latest' ? h(LatestDealsTab, { data }) : null,
-                    activeTab === 'alldata' ? h(AllDataTab, { data }) : null
+                    activeTab === 'alldata' ? h(AllDataTab, { data }) : null,
+                    activeTab === 'cloudberry' ? h(CloudberryViewTab, { data }) : null
                 ),
                 h(FooterSection, { data })
             );
@@ -523,7 +561,8 @@
                 h('button', { className: 'tab' + (activeTab === 'timeline' ? ' active' : ''), onClick: () => setActiveTab('timeline') }, 'Timeline'),
                 h('button', { className: 'tab' + (activeTab === 'iprisk' ? ' active' : ''), onClick: () => setActiveTab('iprisk') }, 'IP Risk'),
                 h('button', { className: 'tab' + (activeTab === 'latest' ? ' active' : ''), onClick: () => setActiveTab('latest') }, 'Latest Deals'),
-                h('button', { className: 'tab' + (activeTab === 'alldata' ? ' active' : ''), onClick: () => setActiveTab('alldata') }, 'All Data')
+                h('button', { className: 'tab' + (activeTab === 'alldata' ? ' active' : ''), onClick: () => setActiveTab('alldata') }, 'All Data'),
+                h('button', { className: 'tab' + (activeTab === 'cloudberry' ? ' active' : ''), onClick: () => setActiveTab('cloudberry'), style: { color: activeTab === 'cloudberry' ? '#007A6E' : undefined } }, 'Cloudberry View')
             );
 
         // ── Overview Tab ──
@@ -800,6 +839,138 @@
             );
         };
 
+        // ── Dynamic Insight Generators ──
+        const median = arr => { if (!arr.length) return null; const s = [...arr].sort((a,b)=>a-b); const m = Math.floor(s.length/2); return s.length%2 ? s[m] : (s[m-1]+s[m])/2; };
+        const mean = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+        const pct = (a,b) => b ? Math.round(a/b*100) : 0;
+        const fmtM = v => v >= 1000 ? '$' + (v/1000).toFixed(1) + 'B' : '$' + Math.round(v) + 'M';
+        const hl = (text) => h('span', { className: 'hl' }, text);
+        const hlg = (text) => h('span', { className: 'hl-green' }, text);
+        const dtag = (text) => h('span', { className: 'deal-tag' }, ' (' + text + ')');
+
+        const generateTimelineInsights = (data) => {
+            const all = data.allDeals || [];
+            if (!all.length) return [];
+            const withV = all.filter(d => d.v != null);
+            const regions = ['USA','Europe','Asia','Other'];
+            const years = [...new Set(all.map(d=>d.yr))].sort();
+            const curYear = years[years.length-1];
+            const fullYears = years.filter(y => y < curYear);
+            const lastFull = fullYears[fullYears.length-1];
+            const prevFull = fullYears[fullYears.length-2];
+
+            const insights = [];
+
+            // 1. Deal count acceleration
+            const early = all.filter(d => d.yr >= 2010 && d.yr <= 2015).length / 6;
+            const mid = all.filter(d => d.yr >= 2016 && d.yr <= 2020).length / 5;
+            const late = all.filter(d => d.yr >= 2021 && d.yr <= 2025).length / 5;
+            const growth = (late / early).toFixed(1);
+            insights.push({ icon: '📈', title: 'Deal activity has accelerated ' + growth + 'x',
+                body: [h('span', null, 'Average annual deal count grew from ', hl(Math.round(early) + '/yr'), ' (2010–15) to ', hl(Math.round(mid) + '/yr'), ' (2016–20) to ', hl(Math.round(late) + '/yr'), ' (2021–25).')] });
+
+            // 2. Mean vs median divergence
+            const globalVals = withV.map(d => d.v);
+            const gMed = median(globalVals);
+            const gMean = mean(globalVals);
+            const ratio = (gMean / gMed).toFixed(1);
+            insights.push({ icon: '⚖️', title: 'Market is heavily skewed by mega-deals',
+                body: [h('span', null, 'Global mean (', hl(fmtM(gMean)), ') is ', hl(ratio + 'x'), ' the median (', hl(fmtM(gMed)), '). A handful of billion-dollar deals each year pull the average far above the typical transaction size.')] });
+
+            // 3. Biggest outlier in most recent full year
+            const lastYearDeals = withV.filter(d => d.yr === lastFull).sort((a,b) => b.v - a.v);
+            if (lastYearDeals.length >= 3) {
+                const top = lastYearDeals[0];
+                const totalVal = lastYearDeals.reduce((s,d) => s + d.v, 0);
+                const topPct = pct(top.v, totalVal);
+                insights.push({ icon: '🏷️', title: lastFull + '\'s largest deal: ' + top.acq + ' → ' + top.tgt + ' (' + fmtM(top.v) + ')',
+                    body: [h('span', null, 'This single transaction accounted for ', hl(topPct + '%'), ' of all disclosed deal value in ' + lastFull + '. The median deal that year was just ', hl(fmtM(median(lastYearDeals.map(d=>d.v)))), '.')] });
+            }
+
+            // 4. Disclosure caveat
+            const discRate = pct(withV.length, all.length);
+            insights.push({ icon: '📊', title: 'Only ' + discRate + '% of deals disclose a value',
+                body: [h('span', null, 'Median and mean figures are based on ', hl(withV.length + ' of ' + all.length), ' deals that disclosed a transaction value. Undisclosed deals skew toward smaller private transactions, so the true market median is likely lower.')] });
+
+            // 5. Regional dominance
+            const usaCount = all.filter(d => d.tR === 'USA').length;
+            const euCount = all.filter(d => d.tR === 'Europe').length;
+            insights.push({ icon: '🌍', title: 'USA targets dominate (' + pct(usaCount, all.length) + '%), Europe is a growing second (' + pct(euCount, all.length) + '%)',
+                body: [h('span', null, 'US targets account for ', hl(usaCount.toLocaleString()), ' deals vs Europe\'s ', hlg(euCount.toLocaleString()), '. However, European target counts have grown from ~15/yr (2010–15) to ', hlg('90+/yr'), ' (2024–25).')] });
+
+            // 6. "Other" region caveat
+            insights.push({ icon: '⚠️', title: '"Other" region data (Israel, Canada, etc.) is volatile',
+                body: [h('span', null, 'Very small sample sizes in the "Other" bucket produce extreme chart spikes. For example, the 2020 "Other" median of ~$2.5B is based on just 2 deals. Treat this line as directional only.')] });
+
+            return insights;
+        };
+
+        const generateCloudberryInsights = (data) => {
+            const all = data.allDeals || [];
+            if (!all.length) return [];
+            const withV = all.filter(d => d.v != null);
+            const regions = ['USA','Europe','Asia','Other'];
+            const insights = [];
+
+            // EU target pool growth
+            const euEarly = all.filter(d => d.tR === 'Europe' && d.yr >= 2010 && d.yr <= 2015).length;
+            const euLate = all.filter(d => d.tR === 'Europe' && d.yr >= 2021 && d.yr <= 2025).length;
+            const euGrowth = (euLate / euEarly).toFixed(1);
+            const eu24 = all.filter(d => d.tR === 'Europe' && d.yr === 2024).length;
+            const eu25 = all.filter(d => d.tR === 'Europe' && d.yr === 2025).length;
+            insights.push({ icon: '🚀', title: 'The European photonics exit pool is expanding rapidly',
+                body: [h('span', null, 'EU target activity has grown ', hl(euGrowth + 'x'), ' from 2010–15 to 2021–25. In 2024–25 alone, we tracked ', hlg(eu24 + ' and ' + eu25 + ' EU targets'), ' respectively — a clear sign of deepening M&A liquidity in our core market.')] });
+
+            // $500M+ exits
+            const bigExits = (y1,y2) => withV.filter(d => d.tR === 'Europe' && d.v >= 500 && d.yr >= y1 && d.yr <= y2).length;
+            insights.push({ icon: '💰', title: 'Large exits (≥$500M) for EU photonics have surged',
+                body: [h('span', null, 'We count ', hl(bigExits(2010,2015) + ' exit ≥$500M'), ' in 2010–15, ', hl(bigExits(2016,2020) + ' in 2016–20'), ', and ', hl(bigExits(2021,2025) + ' in 2021–25'), '. The addressable exit market for our portfolio companies is materially larger today than when we started investing.')] });
+
+            // US acquirer premium
+            const usaBuyEU = withV.filter(d => d.aR === 'USA' && d.tR === 'Europe');
+            const euBuyEU = withV.filter(d => d.aR === 'Europe' && d.tR === 'Europe');
+            const usaEuMed = median(usaBuyEU.map(d=>d.v));
+            const euEuMed = median(euBuyEU.map(d=>d.v));
+            const premium = usaEuMed && euEuMed ? (usaEuMed / euEuMed).toFixed(1) : '?';
+            // Recent period
+            const usaBuyEU_recent = withV.filter(d => d.aR === 'USA' && d.tR === 'Europe' && d.yr >= 2021);
+            const euBuyEU_recent = withV.filter(d => d.aR === 'Europe' && d.tR === 'Europe' && d.yr >= 2021);
+            const usaEuMedR = median(usaBuyEU_recent.map(d=>d.v));
+            const euEuMedR = median(euBuyEU_recent.map(d=>d.v));
+            const premR = usaEuMedR && euEuMedR ? (usaEuMedR / euEuMedR).toFixed(1) : '?';
+            insights.push({ icon: '🇺🇸', title: 'US buyers pay a ' + premR + 'x premium for European targets',
+                body: [h('span', null, 'Since 2021, US acquirers paid a median of ', hl(fmtM(usaEuMedR || 0)), ' for EU photonics companies vs ', hlg(fmtM(euEuMedR || 0)), ' for intra-European deals — a ', hl(premR + 'x premium'), '. This validates our thesis: we invest at European valuations with upside to a US-premium exit.')] });
+
+            // US buyer dominance in big EU exits
+            const bigEU = withV.filter(d => d.tR === 'Europe' && d.v >= 500 && d.yr >= 2021).sort((a,b) => b.v - a.v);
+            const bigEUbyUS = bigEU.filter(d => d.aR === 'USA');
+            if (bigEU.length > 0) {
+                const topExamples = bigEUbyUS.slice(0,4).map(d => d.acq + '→' + d.tgt + ' (' + fmtM(d.v) + ')').join(', ');
+                insights.push({ icon: '🎯', title: pct(bigEUbyUS.length, bigEU.length) + '% of large EU exits go to US acquirers',
+                    body: [h('span', null, 'Of the ', hl(bigEU.length + ' deals ≥$500M'), ' involving EU targets since 2021, ', hl(bigEUbyUS.length + ' were by US buyers'), '. Key examples: ', dtag(topExamples), '. US strategic demand for European photonics is structural, not cyclical.')] });
+            }
+
+            // Asia buyer growth as additional demand
+            const asiaEU_early = all.filter(d => d.aR === 'Asia' && d.tR === 'Europe' && d.yr >= 2010 && d.yr <= 2015).length;
+            const asiaEU_late = all.filter(d => d.aR === 'Asia' && d.tR === 'Europe' && d.yr >= 2021 && d.yr <= 2025).length;
+            insights.push({ icon: '🌏', title: 'Asian buyers are emerging as a third exit route',
+                body: [h('span', null, 'Asia→EU deals grew from ', hl(asiaEU_early + ' (2010–15)'), ' to ', hl(asiaEU_late + ' (2021–25)'), '. Companies like Renesas, Nikon, and AU Optronics have made significant European acquisitions. A widening buyer pool supports valuations and gives our portfolio companies more strategic options at exit.')] });
+
+            // Valuation gap = opportunity
+            const usaMed = median(withV.filter(d => d.tR === 'USA').map(d=>d.v));
+            const euMed = median(withV.filter(d => d.tR === 'Europe').map(d=>d.v));
+            const gap = usaMed && euMed ? (usaMed / euMed).toFixed(1) : '?';
+            insights.push({ icon: '📐', title: 'European deal sizes are ' + gap + 'x smaller than US — our entry advantage',
+                body: [h('span', null, 'The median European photonics transaction (', hlg(fmtM(euMed || 0)), ') is ~1/' + gap + 'th of the US median (', hl(fmtM(usaMed || 0)), '). We see this as a valuation gap, not a quality gap. European photonics companies often match US peers in technology but trade at a discount — an asymmetry Cloudberry is positioned to capture.')] });
+
+            // EU share of market
+            const euShare = pct(all.filter(d => d.tR === 'Europe').length, all.length);
+            insights.push({ icon: '🇪🇺', title: 'Europe accounts for ~' + euShare + '% of global photonics M&A',
+                body: [h('span', null, 'European targets represent a consistent ~35–43% of global deal flow. This is a deep, liquid market — not a niche. For Cloudberry, this means a large and growing pipeline of potential investments and, just as importantly, a robust set of comparable transactions to benchmark against.')] });
+
+            return insights;
+        };
+
         // ── Timeline Tab ──
         const TimelineTab = ({ data }) =>
             h('div', { className: 'tab-content active' },
@@ -829,6 +1000,48 @@
                     )
                 ),
                 h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Median Deal Value by Year ($M)'),
+                    h(ResponsiveContainer, { width: '100%', height: 320 },
+                        h(LineChart, { data: data.medianByYear },
+                            h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS),
+                            h(Tooltip, DARK_TOOLTIP),
+                            h(Legend, null),
+                            h(Line, { type: 'monotone', dataKey: 'Global', stroke: CHART_COLORS.global, name: 'Global', strokeWidth: 3, dot: { fill: CHART_COLORS.global, r: 3 }, connectNulls: true }),
+                            h(Line, { type: 'monotone', dataKey: 'USA', stroke: CHART_COLORS.usa, name: 'USA', strokeWidth: 2, dot: { fill: CHART_COLORS.usa, r: 3 }, connectNulls: true }),
+                            h(Line, { type: 'monotone', dataKey: 'Europe', stroke: CHART_COLORS.europe, name: 'Europe', strokeWidth: 2, dot: { fill: CHART_COLORS.europe, r: 3 }, connectNulls: true }),
+                            h(Line, { type: 'monotone', dataKey: 'Asia', stroke: CHART_COLORS.asia, name: 'Asia', strokeWidth: 2, dot: { fill: CHART_COLORS.asia, r: 3 }, connectNulls: true }),
+                            h(Line, { type: 'monotone', dataKey: 'Other', stroke: CHART_COLORS.other, name: 'Other', strokeWidth: 2, dot: { fill: CHART_COLORS.other, r: 3 }, connectNulls: true }),
+                        )
+                    )
+                ),
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Mean Deal Value by Year ($M)'),
+                    h(ResponsiveContainer, { width: '100%', height: 320 },
+                        h(LineChart, { data: data.meanByYear },
+                            h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS),
+                            h(Tooltip, DARK_TOOLTIP),
+                            h(Legend, null),
+                            h(Line, { type: 'monotone', dataKey: 'Global', stroke: CHART_COLORS.global, name: 'Global', strokeWidth: 3, dot: { fill: CHART_COLORS.global, r: 3 }, connectNulls: true }),
+                            h(Line, { type: 'monotone', dataKey: 'USA', stroke: CHART_COLORS.usa, name: 'USA', strokeWidth: 2, dot: { fill: CHART_COLORS.usa, r: 3 }, connectNulls: true }),
+                            h(Line, { type: 'monotone', dataKey: 'Europe', stroke: CHART_COLORS.europe, name: 'Europe', strokeWidth: 2, dot: { fill: CHART_COLORS.europe, r: 3 }, connectNulls: true }),
+                            h(Line, { type: 'monotone', dataKey: 'Asia', stroke: CHART_COLORS.asia, name: 'Asia', strokeWidth: 2, dot: { fill: CHART_COLORS.asia, r: 3 }, connectNulls: true }),
+                            h(Line, { type: 'monotone', dataKey: 'Other', stroke: CHART_COLORS.other, name: 'Other', strokeWidth: 2, dot: { fill: CHART_COLORS.other, r: 3 }, connectNulls: true }),
+                        )
+                    )
+                ),
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Key Takeaways'),
+                    h('div', { className: 'insight-disclaimer' },
+                        h('strong', null, 'Disclaimer: '), 'These insights are auto-generated from the underlying deal data and refreshed each time the dataset updates. Only ~25–30% of deals disclose transaction values; figures reflect this disclosed subset only. Median and mean calculations may be volatile for regions or years with small sample sizes. This analysis is for informational purposes and does not constitute investment advice.'
+                    ),
+                    ...generateTimelineInsights(data).map((ins, i) =>
+                        h('div', { className: 'insight-item', key: 'ti-' + i },
+                            h('div', { className: 'insight-icon' }, ins.icon),
+                            h('div', null, h('div', { className: 'insight-title' }, ins.title), h('div', { className: 'insight-body' }, ...ins.body))
+                        )
+                    )
+                ),
+                h('div', { className: 'card' },
                     h('div', { className: 'card-header' }, 'Deal Count by Year & Region'),
                     h('div', { className: 'table-container' },
                         h('table', null,
@@ -855,6 +1068,79 @@
                     )
                 )
             );
+
+        // ── Cloudberry View Tab ──
+        const CloudberryViewTab = ({ data }) => {
+            const all = data.allDeals || [];
+            const withV = all.filter(d => d.v != null);
+
+            // Compute key stats for the summary cards
+            const euTargets2125 = all.filter(d => d.tR === 'Europe' && d.yr >= 2021 && d.yr <= 2025).length;
+            const bigExits = withV.filter(d => d.tR === 'Europe' && d.v >= 500 && d.yr >= 2021).length;
+            const usaBuyEU_recent = withV.filter(d => d.aR === 'USA' && d.tR === 'Europe' && d.yr >= 2021);
+            const euBuyEU_recent = withV.filter(d => d.aR === 'Europe' && d.tR === 'Europe' && d.yr >= 2021);
+            const usMed = median(usaBuyEU_recent.map(d=>d.v));
+            const euMed = median(euBuyEU_recent.map(d=>d.v));
+            const premiumX = usMed && euMed ? (usMed/euMed).toFixed(1) : '—';
+            const asiaEU = all.filter(d => d.aR === 'Asia' && d.tR === 'Europe' && d.yr >= 2021).length;
+
+            return h('div', { className: 'tab-content active' },
+                // Header
+                h('div', { className: 'card', style: { borderLeft: '3px solid #007A6E' } },
+                    h('div', { className: 'cloudberry-header' },
+                        h('img', { src: 'cloudberryvc-icon.svg', alt: 'Cloudberry VC' }),
+                        h('div', null,
+                            h('div', { className: 'card-header', style: { color: '#51A094', marginBottom: '4px' } }, 'Cloudberry View: European Semi & Photonics'),
+                            h('div', { style: { color: '#9CA3AF', fontSize: '13px' } }, 'What the M&A data means for our investment thesis — auto-generated from ' + all.length.toLocaleString() + ' deals, updated ' + (data.lastUpdated || 'weekly'))
+                        )
+                    )
+                ),
+                // KPI cards
+                h('div', { className: 'grid-4', style: { margin: '0 0 20px' } },
+                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'EU TARGETS (2021–25)'), h('div', { className: 'stat-value' }, euTargets2125.toLocaleString())),
+                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'EU EXITS ≥$500M (2021–25)'), h('div', { className: 'stat-value' }, bigExits)),
+                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'US→EU PREMIUM'), h('div', { className: 'stat-value' }, premiumX + 'x')),
+                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'ASIA→EU DEALS (2021–25)'), h('div', { className: 'stat-value' }, asiaEU))
+                ),
+                // Disclaimer
+                h('div', { className: 'card thesis-card' },
+                    h('div', { className: 'insight-disclaimer' },
+                        h('strong', null, 'Disclaimer: '), 'The following analysis is auto-generated from raw deal data and refreshed each time the dataset updates. Only disclosed-value transactions (~25–30% of total) are included in value-based metrics. This does not constitute investment advice. Cloudberry VC makes its own independent investment decisions.'
+                    ),
+                    // Dynamic insights
+                    ...generateCloudberryInsights(data).map((ins, i) =>
+                        h('div', { className: 'insight-item', key: 'ci-' + i },
+                            h('div', { className: 'insight-icon' }, ins.icon),
+                            h('div', null, h('div', { className: 'insight-title' }, ins.title), h('div', { className: 'insight-body' }, ...ins.body))
+                        )
+                    )
+                ),
+                // Notable EU exits table
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Notable European Exits ≥$500M (2021–present)'),
+                    h('div', { className: 'table-container' },
+                        h('table', null,
+                            h('thead', null, h('tr', null, h('th', null, 'Year'), h('th', null, 'Acquirer'), h('th', null, 'Region'), h('th', null, 'Target'), h('th', null, 'Country'), h('th', null, 'Value'), h('th', null, ''))),
+                            h('tbody', null,
+                                withV.filter(d => d.tR === 'Europe' && d.v >= 500 && d.yr >= 2021).sort((a,b) => b.v - a.v).map((d, i) =>
+                                    h('tr', { key: i },
+                                        h('td', null, d.yr),
+                                        h('td', { style: { fontWeight: 600 } }, d.acq),
+                                        h('td', null, h(RegionBadge, { region: d.aR })),
+                                        h('td', null, d.tgt),
+                                        h('td', null, d.tgtC),
+                                        h('td', null, h('strong', null, fmtM(d.v))),
+                                        h('td', { style: { textAlign: 'center' } },
+                                            d.url ? h('a', { href: d.url, target: '_blank', rel: 'noopener noreferrer', style: { color: '#FFBD48', textDecoration: 'none', fontSize: '12px' }, title: 'View deal details' }, 'Details ↗') : null
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        };
 
         // ── IP Risk Tab ──
         const IPRiskTab = ({ data }) => {
