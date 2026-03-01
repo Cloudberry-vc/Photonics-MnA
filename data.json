@@ -1,0 +1,1470 @@
+{
+  "lastUpdated": "2026-03-01",
+  "total": 1985,
+  "euTargetsTotal": 745,
+  "totalUSABuyEU": 268,
+  "totalEUBuyUSA": 140,
+  "totalEUBuyEU": 406,
+  "totalAsiaBuyEU": 56,
+  "totalDisclosedValue": 261861,
+  "totalUSABuyEUValue": 38838,
+  "totalEUBuyUSAValue": 13507,
+  "targetsByRegion": {
+    "Europe": 745,
+    "USA": 1004,
+    "Asia": 105,
+    "Other": 131
+  },
+  "acquirersByRegion": {
+    "USA": 1180,
+    "Europe": 599,
+    "Asia": 149,
+    "Other": 57
+  },
+  "euByAcquirer": {
+    "Europe": 406,
+    "USA": 268,
+    "Asia": 56,
+    "Other": 15
+  },
+  "euSizeByAcquirer": {
+    "USA": {
+      "avg": 275,
+      "median": 290,
+      "total": 38838,
+      "count": 141
+    },
+    "Europe": {
+      "avg": 336,
+      "median": 69,
+      "total": 64800,
+      "count": 193
+    },
+    "Asia": {
+      "avg": 293,
+      "median": 39,
+      "total": 9943,
+      "count": 34
+    }
+  },
+  "yearData": [
+    {
+      "year": 2013,
+      "USA": 44,
+      "Europe": 11,
+      "Asia": 4,
+      "Other": 1
+    },
+    {
+      "year": 2014,
+      "USA": 31,
+      "Europe": 21,
+      "Asia": 3,
+      "Other": 1
+    },
+    {
+      "year": 2015,
+      "USA": 24,
+      "Europe": 7,
+      "Asia": 2,
+      "Other": 0
+    },
+    {
+      "year": 2016,
+      "USA": 37,
+      "Europe": 21,
+      "Asia": 6,
+      "Other": 0
+    },
+    {
+      "year": 2017,
+      "USA": 59,
+      "Europe": 37,
+      "Asia": 8,
+      "Other": 3
+    },
+    {
+      "year": 2018,
+      "USA": 79,
+      "Europe": 39,
+      "Asia": 13,
+      "Other": 1
+    },
+    {
+      "year": 2019,
+      "USA": 88,
+      "Europe": 50,
+      "Asia": 12,
+      "Other": 5
+    },
+    {
+      "year": 2020,
+      "USA": 72,
+      "Europe": 38,
+      "Asia": 10,
+      "Other": 4
+    },
+    {
+      "year": 2021,
+      "USA": 123,
+      "Europe": 49,
+      "Asia": 15,
+      "Other": 4
+    },
+    {
+      "year": 2022,
+      "USA": 94,
+      "Europe": 43,
+      "Asia": 7,
+      "Other": 7
+    },
+    {
+      "year": 2023,
+      "USA": 94,
+      "Europe": 51,
+      "Asia": 13,
+      "Other": 6
+    },
+    {
+      "year": 2024,
+      "USA": 161,
+      "Europe": 96,
+      "Asia": 23,
+      "Other": 9
+    },
+    {
+      "year": 2025,
+      "USA": 286,
+      "Europe": 162,
+      "Asia": 35,
+      "Other": 10
+    },
+    {
+      "year": 2026,
+      "USA": 68,
+      "Europe": 34,
+      "Asia": 4,
+      "Other": 1,
+      "note": "Jan-Feb only"
+    }
+  ],
+  "yearValueData": [
+    {
+      "year": 2013,
+      "USA": 6278,
+      "Europe": 556,
+      "Asia": 0
+    },
+    {
+      "year": 2014,
+      "USA": 11478,
+      "Europe": 4048,
+      "Asia": 440
+    },
+    {
+      "year": 2015,
+      "USA": 10862,
+      "Europe": 1196,
+      "Asia": 0
+    },
+    {
+      "year": 2016,
+      "USA": 13406,
+      "Europe": 4183,
+      "Asia": 200
+    },
+    {
+      "year": 2017,
+      "USA": 12823,
+      "Europe": 4055,
+      "Asia": 1360
+    },
+    {
+      "year": 2018,
+      "USA": 10095,
+      "Europe": 4068,
+      "Asia": 1485
+    },
+    {
+      "year": 2019,
+      "USA": 14228,
+      "Europe": 7521,
+      "Asia": 1028
+    },
+    {
+      "year": 2020,
+      "USA": 19088,
+      "Europe": 8108,
+      "Asia": 1650
+    },
+    {
+      "year": 2021,
+      "USA": 26073,
+      "Europe": 21523,
+      "Asia": 3490
+    },
+    {
+      "year": 2022,
+      "USA": 19571,
+      "Europe": 2897,
+      "Asia": 970
+    },
+    {
+      "year": 2023,
+      "USA": 14286,
+      "Europe": 5072,
+      "Asia": 1670
+    },
+    {
+      "year": 2024,
+      "USA": 47278,
+      "Europe": 11042,
+      "Asia": 3705
+    },
+    {
+      "year": 2025,
+      "USA": 64573,
+      "Europe": 14413,
+      "Asia": 8094
+    },
+    {
+      "year": 2026,
+      "USA": 8166,
+      "Europe": 1462,
+      "Asia": 0
+    }
+  ],
+  "usaBuyEU": [
+    {
+      "acq": "Viasat",
+      "tgt": "Inmarsat",
+      "tgtC": "United Kingdom",
+      "yr": 2021,
+      "v": 7300,
+      "url": "https://www.inmarsat.com/en/news/latest-news/corporate/2021/viasat-inmarsat-to-combine.html"
+    },
+    {
+      "acq": "Thermo Fisher Scientific",
+      "tgt": "Patheon",
+      "tgtC": "Netherlands",
+      "yr": 2017,
+      "v": 7200,
+      "url": "https://www.prnewswire.com/news-releases/thermo-fisher-scientific-completes-acquisition-of-patheon-300510547.html"
+    },
+    {
+      "acq": "KKR",
+      "tgt": "Spectris",
+      "tgtC": "United Kingdom",
+      "yr": 2025,
+      "v": 5207,
+      "url": "https://media.kkr.com/news-details?news_id=eaf76044-901c-40d7-9413-a7a24f8002d6"
+    },
+    {
+      "acq": "MKS Instruments",
+      "tgt": "Atotech",
+      "tgtC": "Germany",
+      "yr": 2021,
+      "v": 5100,
+      "url": "https://investor.mks.com/news-releases/news-release-details/mks-instruments-announces-closing-atotech-acquisition"
+    },
+    {
+      "acq": "Qualcomm & SSW Partners",
+      "tgt": "Veoneer",
+      "tgtC": "Sweden",
+      "yr": 2021,
+      "v": 4500,
+      "url": "https://www.qualcomm.com/news/releases/2021/10/04/qualcomm-and-ssw-partners-reach-definitive-agreement-acquire-veoneer"
+    },
+    {
+      "acq": "Apollo",
+      "tgt": "Lumileds",
+      "tgtC": "Netherlands",
+      "yr": 2017,
+      "v": 3300,
+      "url": "https://optics.org/news/8/7/11"
+    },
+    {
+      "acq": "Thermo Fisher Scientific",
+      "tgt": "Olink Holding",
+      "tgtC": "Sweden",
+      "yr": 2024,
+      "v": 3100,
+      "url": "https://newsroom.thermofisher.com/newsroom/press-releases/press-release-details/2024/Thermo-Fisher-Scientific-Completes-Acquisition-of-Olink-Announces-Commencement-of-Subsequent-Offering-Period/default.aspx"
+    },
+    {
+      "acq": "Qualcomm",
+      "tgt": "Alphawave Semi",
+      "tgtC": "United Kingdom",
+      "yr": 2025,
+      "v": 2400,
+      "url": "https://www.qualcomm.com/news/releases/2025/06/qualcomm-to-acquire-alphawave-semi"
+    },
+    {
+      "acq": "Thermo Fisher Scientific",
+      "tgt": "Dionex",
+      "tgtC": "Belgium",
+      "yr": 2011,
+      "v": 2100,
+      "url": "https://www.photonics.com/Articles/Thermo_Fisher_Scientific_Inc/a46364"
+    },
+    {
+      "acq": "Vista Equity Partners",
+      "tgt": "Blue Prism",
+      "tgtC": "United Kingdom",
+      "yr": 2021,
+      "v": 1500,
+      "url": ""
+    },
+    {
+      "acq": "IonQ",
+      "tgt": "Oxford Ionics",
+      "tgtC": "United Kingdom",
+      "yr": 2025,
+      "v": 1075,
+      "url": "https://ionq.com/news/ionq-announces-agreement-to-acquire-oxford-ionics-accelerating-path-to-pioneering"
+    },
+    {
+      "acq": "Wabtec",
+      "tgt": "Frauscher Sensor",
+      "tgtC": "Austria",
+      "yr": 2025,
+      "v": 729,
+      "url": "https://www.wabteccorp.com/newsroom/press-releases/wabtec-to-acquire-frauscher-sensor-technology-group"
+    },
+    {
+      "acq": "Onto Innovation",
+      "tgt": "Semilab Materials",
+      "tgtC": "Hungary",
+      "yr": 2025,
+      "v": 545,
+      "url": "https://investors.ontoinnovation.com/news/news-details/2025/Onto-Innovation-Announces-Agreement-to-Acquire-Semilab-Internationals-Materials-Analysis-Business/default.aspx"
+    },
+    {
+      "acq": "Rocket Lab",
+      "tgt": "Mynaric",
+      "tgtC": "Germany",
+      "yr": 2025,
+      "v": 75,
+      "url": "https://investors.rocketlabusa.com/news/news-details/2025/Rocket-Lab-Announces-Intention-to-Acquire-Mynaric-Leading-Laser-Communications-Provider-in-Latest-Strategic-Step-Toward-Becoming-an-End-to-End-Space-Company/default.aspx"
+    },
+    {
+      "acq": "Exaktera",
+      "tgt": "autoVimation",
+      "tgtC": "Germany",
+      "yr": 2025,
+      "v": null,
+      "url": "https://www.exaktera.com/exaktera-acquires-advanced-illumination-491747-140071.html"
+    },
+    {
+      "acq": "Strangeworks",
+      "tgt": "Quantagonia",
+      "tgtC": "Germany",
+      "yr": 2025,
+      "v": null,
+      "url": "https://strangeworks.com/press/strangeworks-acquires-quantagonia-to-create-global-leader-in-applied-ai-optimization-and-quantum-computing"
+    },
+    {
+      "acq": "Assurant",
+      "tgt": "OptoFidelity",
+      "tgtC": "Finland",
+      "yr": 2025,
+      "v": null,
+      "url": "https://www.assurant.com/news-insights/news_releases/assurant-expands-automation-capabilities-acquires-optofidelity"
+    },
+    {
+      "acq": "Molex",
+      "tgt": "Smiths Interconnect",
+      "tgtC": "United Kingdom",
+      "yr": 2025,
+      "v": null,
+      "url": "https://www.molex.com/en-us/news/molex-announces-agreement-to-acquire-smiths-interconnect-enhancing-its-position-in-aerospace-and-defense"
+    },
+    {
+      "acq": "Astera Labs",
+      "tgt": "aiXscale Photonics",
+      "tgtC": "Germany",
+      "yr": 2025,
+      "v": null,
+      "url": "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-acquire-aixscale-photonics"
+    },
+    {
+      "acq": "Teledyne",
+      "tgt": "DD-Scientific",
+      "tgtC": "United Kingdom",
+      "yr": 2026,
+      "v": null,
+      "url": "https://www.teledyne.com/en-us/news/Pages/teledyne-acquires-dd-scientific.aspx"
+    },
+    {
+      "acq": "Tibidabo Scientific",
+      "tgt": "XCAM Scientific",
+      "tgtC": "United Kingdom",
+      "yr": 2025,
+      "v": null,
+      "url": "https://xcamscientific.com/tibidabo-scientific-industries-expands-space-scientific-imaging-capabilities-with-acquisition-of-xcam"
+    },
+    {
+      "acq": "FormFactor",
+      "tgt": "Keystone Photonics",
+      "tgtC": "Germany",
+      "yr": 2025,
+      "v": null,
+      "url": "https://www.formfactor.com/press-release/formfactor-expands-silicon-photonics-test-capabilities-with-acquisition-of-keystone-photonics/"
+    },
+    {
+      "acq": "QED Technologies",
+      "tgt": "Dutch United Instruments",
+      "tgtC": "Netherlands",
+      "yr": 2025,
+      "v": null,
+      "url": "https://qedmrf.com/about-qed/news-events/"
+    },
+    {
+      "acq": "Quantum Design",
+      "tgt": "Oxford NanoScience",
+      "tgtC": "United Kingdom",
+      "yr": 2025,
+      "v": null,
+      "url": ""
+    }
+  ],
+  "euBuyUSA": [
+    {
+      "acq": "Siemens",
+      "acqC": "Germany",
+      "tgt": "Altair",
+      "yr": 2024,
+      "v": 10600,
+      "url": "https://investor.altair.com/news-releases/news-release-details/altair-signs-definitive-agreement-siemens-be-acquired-106"
+    },
+    {
+      "acq": "Infineon",
+      "acqC": "Germany",
+      "tgt": "Cypress Semiconductor",
+      "yr": 2019,
+      "v": 9720,
+      "url": "https://www.infineon.com/cms/en/about-infineon/press/press-releases/2019/INFXX201906-074.html"
+    },
+    {
+      "acq": "SES",
+      "acqC": "Belgium",
+      "tgt": "Intelsat",
+      "yr": 2024,
+      "v": 3100,
+      "url": "https://www.intelsat.com/newsroom/ses-to-acquire-intelsat/"
+    },
+    {
+      "acq": "ASML",
+      "acqC": "Netherlands",
+      "tgt": "Hermes Microvision",
+      "yr": 2016,
+      "v": 3100,
+      "url": "https://www.photonics.com/Articles/ASML_to_Acquire_Hermes_Microvision_for_31B/a60813"
+    },
+    {
+      "acq": "Prysmian",
+      "acqC": "Italy",
+      "tgt": "General Cable",
+      "yr": 2017,
+      "v": 3000,
+      "url": "https://www.prysmiangroup.com/en/press-releases/prysmian-to-acquire-general-cable"
+    },
+    {
+      "acq": "Infineon",
+      "acqC": "Germany",
+      "tgt": "Marvell Automotive Ethernet",
+      "yr": 2025,
+      "v": 2500,
+      "url": "https://www.marvell.com/company/newsroom/marvell-sells-automotive-ethernet-business-to-infineon.html"
+    },
+    {
+      "acq": "Nokia",
+      "acqC": "Finland",
+      "tgt": "Infinera",
+      "yr": 2024,
+      "v": 2300,
+      "url": "https://www.infinera.com/press-release/nokia-to-acquire-infinera/"
+    },
+    {
+      "acq": "ASML",
+      "acqC": "Netherlands",
+      "tgt": "Cymer",
+      "yr": 2012,
+      "v": 2106,
+      "url": "https://www.asml.com/en/news/press-releases/2012/asml-to-acquire-cymer-to-accelerate-development-of-euv-technology"
+    },
+    {
+      "acq": "Colt Technology",
+      "acqC": "United Kingdom",
+      "tgt": "Lumen EMEA business",
+      "yr": 2023,
+      "v": 1800,
+      "url": "https://www.lightwaveonline.com/business/mergers-acquisitions/article/14301152/colt-accelerates-customer-reach-with-18b-lumen-emea-acquisition"
+    },
+    {
+      "acq": "Signify",
+      "acqC": "Netherlands",
+      "tgt": "Cooper Lighting Solutions",
+      "yr": 2019,
+      "v": 1400,
+      "url": "https://www.signify.com/global/our-company/news/press-releases/2019/20191015-signify-to-acquire-cooper-lighting-solutions-to-strengthen-its-position-in-attractive-north-american-lighting-market"
+    },
+    {
+      "acq": "Siemens Healthineers",
+      "acqC": "Germany",
+      "tgt": "Corindus Vascular Robotics",
+      "yr": 2019,
+      "v": 1100,
+      "url": "https://www.siemens-healthineers.com/en-us/press-room/press-releases/pr-20190808032shs.html"
+    },
+    {
+      "acq": "EQT",
+      "acqC": "Sweden",
+      "tgt": "Lumos Networks",
+      "yr": 2017,
+      "v": 950,
+      "url": "https://www.eqtgroup.com/globalassets/newsroom/lmos-eqt-final-2-20-17.pdf"
+    },
+    {
+      "acq": "STMicroelectronics",
+      "acqC": "Switzerland",
+      "tgt": "NXP MEMS business",
+      "yr": 2025,
+      "v": 1026,
+      "url": "https://newsroom.st.com/media-center/press-item.html/c3350.html"
+    },
+    {
+      "acq": "Alcon",
+      "acqC": "Switzerland",
+      "tgt": "Lensar",
+      "yr": 2025,
+      "v": 430,
+      "url": "https://investor.alcon.com/news-and-events/press-releases/news-details/2025/Alcon-Agrees-to-Acquire-LENSAR-Inc-/default.aspx"
+    },
+    {
+      "acq": "FOSS",
+      "acqC": "Denmark",
+      "tgt": "Wasatch Photonics",
+      "yr": 2025,
+      "v": 39,
+      "url": "https://www.fossanalytics.com/en/news-articles/newsforum/global/2025/foss-group-acquires-wasatch-photonics"
+    },
+    {
+      "acq": "Mycronic",
+      "acqC": "Sweden",
+      "tgt": "Surfx",
+      "yr": 2025,
+      "v": null,
+      "url": "https://www.mycronic.com/news-events/our-press-releases/global-technologies-acquires-surfx-in-the-us/"
+    },
+    {
+      "acq": "Sandvik",
+      "acqC": "Sweden",
+      "tgt": "Verisurf",
+      "yr": 2025,
+      "v": null,
+      "url": "https://www.home.sandvik/en/news-and-media/news/2025/03/sandvik-to-acquire-3d-metrology-software-provider-verisurf/"
+    },
+    {
+      "acq": "Nordic Semiconductor",
+      "acqC": "Norway",
+      "tgt": "Neuton.AI",
+      "yr": 2025,
+      "v": null,
+      "url": "https://www.nordicsemi.com/Nordic-news/2025/06/Nordic-Semiconductor-accelerates-edge-AI-leadership-with-acquisition-of-Neuton-AI"
+    },
+    {
+      "acq": "G&H",
+      "acqC": "United Kingdom",
+      "tgt": "Global Photonics",
+      "yr": 2025,
+      "v": null,
+      "url": ""
+    },
+    {
+      "acq": "Prior Scientific",
+      "acqC": "United Kingdom",
+      "tgt": "Kinetic Systems",
+      "yr": 2025,
+      "v": null,
+      "url": "https://www.prior.com/news/prior-scientific-instruments-strengthens-global-position-with-strategic-acquisition-of-us-vibration-isolation-specialist"
+    }
+  ],
+  "topDeals": [
+    {
+      "yr": 2023,
+      "acq": "Broadcom",
+      "aR": "USA",
+      "tgt": "VMware",
+      "tR": "USA",
+      "v": 61000,
+      "url": "https://www.lightwaveonline.com/business/mergers-acquisitions/article/14277268/broadcom-to-buy-vmware"
+    },
+    {
+      "yr": 2025,
+      "acq": "AT&T",
+      "aR": "USA",
+      "tgt": "EchoStar Spectrum",
+      "tR": "USA",
+      "v": 23000,
+      "url": ""
+    },
+    {
+      "yr": 2025,
+      "acq": "Skyworks",
+      "aR": "USA",
+      "tgt": "Qorvo",
+      "tR": "USA",
+      "v": 22000,
+      "url": "https://www.qorvo.com/newsroom/news/2025/skyworks-and-qorvo-to-combine-to-create-22-billion-us-based-leader"
+    },
+    {
+      "yr": 2018,
+      "acq": "Broadcom",
+      "aR": "USA",
+      "tgt": "CA Technologies",
+      "tR": "USA",
+      "v": 18900,
+      "url": ""
+    },
+    {
+      "yr": 2016,
+      "acq": "Analog Devices",
+      "aR": "USA",
+      "tgt": "Linear Technology",
+      "tR": "USA",
+      "v": 14936,
+      "url": ""
+    },
+    {
+      "yr": 2025,
+      "acq": "Amphenol",
+      "aR": "USA",
+      "tgt": "CommScope CCS",
+      "tR": "USA",
+      "v": 10500,
+      "url": "https://investors.amphenol.com/news-and-events/news-details/2025/Amphenol-Corporation-to-Acquire-Connectivity-and-Cable-Solutions-Business-From-CommScope/default.aspx"
+    },
+    {
+      "yr": 2025,
+      "acq": "Thoma Bravo",
+      "aR": "USA",
+      "tgt": "Boeing Digital Aviation",
+      "tR": "USA",
+      "v": 10550,
+      "url": "https://investors.boeing.com/investors/news/press-release-details/2025/Boeing-to-Sell-Portions-of-Digital-Aviation-Solutions-to-Thoma-Bravo-for-10-55-Billion/default.aspx"
+    },
+    {
+      "yr": 2024,
+      "acq": "Siemens",
+      "aR": "Europe",
+      "tgt": "Altair",
+      "tR": "USA",
+      "v": 10600,
+      "url": "https://investor.altair.com/news-releases/news-release-details/altair-signs-definitive-agreement-siemens-be-acquired-106"
+    },
+    {
+      "yr": 2024,
+      "acq": "Infineon",
+      "aR": "Europe",
+      "tgt": "Cypress",
+      "tR": "USA",
+      "v": 9720,
+      "url": "https://www.infineon.com/cms/en/about-infineon/press/press-releases/2019/INFXX201906-074.html"
+    },
+    {
+      "yr": 2021,
+      "acq": "Viasat",
+      "aR": "USA",
+      "tgt": "Inmarsat",
+      "tR": "Europe",
+      "v": 7300,
+      "url": "https://www.inmarsat.com/en/news/latest-news/corporate/2021/viasat-inmarsat-to-combine.html"
+    },
+    {
+      "yr": 2025,
+      "acq": "onsemi",
+      "aR": "USA",
+      "tgt": "Allegro MicroSystems",
+      "tR": "USA",
+      "v": 6900,
+      "url": "https://www.onsemi.com/company/news-media/press-announcements/en/onsemi-proposes-to-acquire-allegro-microsystems-for-35-10-per-share-in-cashh"
+    },
+    {
+      "yr": 2017,
+      "acq": "Thermo Fisher Scientific",
+      "aR": "USA",
+      "tgt": "Patheon",
+      "tR": "Europe",
+      "v": 7200,
+      "url": "https://www.prnewswire.com/news-releases/thermo-fisher-scientific-completes-acquisition-of-patheon-300510547.html"
+    }
+  ],
+  "blockedDeals": [
+    {
+      "acq": "NVIDIA",
+      "acqR": "USA",
+      "tgt": "Arm Limited",
+      "tgtC": "United Kingdom",
+      "tgtR": "Europe",
+      "yr": 2020,
+      "v": 40000,
+      "sector": "CPU/AI IP",
+      "reason": "Blocked by UK CMA, US FTC, and EU regulators over competition and national security concerns. Would have transferred the world's most critical chip IP architecture to US control.",
+      "regulators": [
+        "UK CMA",
+        "US FTC",
+        "EU Commission"
+      ]
+    }
+  ],
+  "usaBuyEUPerYear": [
+    {
+      "yr": 2013,
+      "n": 6
+    },
+    {
+      "yr": 2014,
+      "n": 8
+    },
+    {
+      "yr": 2015,
+      "n": 7
+    },
+    {
+      "yr": 2016,
+      "n": 14
+    },
+    {
+      "yr": 2017,
+      "n": 17
+    },
+    {
+      "yr": 2018,
+      "n": 22
+    },
+    {
+      "yr": 2019,
+      "n": 25
+    },
+    {
+      "yr": 2020,
+      "n": 19
+    },
+    {
+      "yr": 2021,
+      "n": 26
+    },
+    {
+      "yr": 2022,
+      "n": 19
+    },
+    {
+      "yr": 2023,
+      "n": 20
+    },
+    {
+      "yr": 2024,
+      "n": 32
+    },
+    {
+      "yr": 2025,
+      "n": 41
+    },
+    {
+      "yr": 2026,
+      "n": 12
+    }
+  ],
+  "allDeals": [
+    {
+      "yr": 2026,
+      "mo": "",
+      "type": "",
+      "acq": "Teledyne",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "DD-Scientific",
+      "tgtC": "United Kingdom",
+      "tR": "Europe",
+      "v": null,
+      "url": "https://www.teledyne.com/en-us/news/Pages/teledyne-acquires-dd-scientific.aspx"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "AT&T",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "EchoStar Spectrum",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 23000,
+      "url": ""
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Skyworks",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Qorvo",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 22000,
+      "url": "https://www.qorvo.com/newsroom/news/2025/skyworks-and-qorvo-to-combine-to-create-22-billion-us-based-leader"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Thoma Bravo",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Boeing Digital Aviation",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 10550,
+      "url": "https://investors.boeing.com/investors/news/press-release-details/2025/Boeing-to-Sell-Portions-of-Digital-Aviation-Solutions-to-Thoma-Bravo-for-10-55-Billion/default.aspx"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Amphenol",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "CommScope CCS",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 10500,
+      "url": "https://investors.amphenol.com/news-and-events/news-details/2025/Amphenol-Corporation-to-Acquire-Connectivity-and-Cable-Solutions-Business-From-CommScope/default.aspx"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "onsemi",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Allegro MicroSystems",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 6900,
+      "url": "https://www.onsemi.com/company/news-media/press-announcements/en/onsemi-proposes-to-acquire-allegro-microsystems-for-35-10-per-share-in-cashh"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "KKR",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Spectris",
+      "tgtC": "United Kingdom",
+      "tR": "Europe",
+      "v": 5207,
+      "url": "https://media.kkr.com/news-details?news_id=eaf76044-901c-40d7-9413-a7a24f8002d6"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Infineon",
+      "acqC": "Germany",
+      "aR": "Europe",
+      "tgt": "Marvell Automotive Ethernet",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 2500,
+      "url": "https://www.marvell.com/company/newsroom/marvell-sells-automotive-ethernet-business-to-infineon.html"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Qualcomm",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Alphawave Semi",
+      "tgtC": "United Kingdom",
+      "tR": "Europe",
+      "v": 2400,
+      "url": "https://www.qualcomm.com/news/releases/2025/06/qualcomm-to-acquire-alphawave-semi"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "IonQ",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Oxford Ionics",
+      "tgtC": "United Kingdom",
+      "tR": "Europe",
+      "v": 1075,
+      "url": "https://ionq.com/news/ionq-announces-agreement-to-acquire-oxford-ionics-accelerating-path-to-pioneering"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "STMicroelectronics",
+      "acqC": "Switzerland",
+      "aR": "Europe",
+      "tgt": "NXP MEMS business",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 1026,
+      "url": "https://newsroom.st.com/media-center/press-item.html/c3350.html"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Wabtec",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Frauscher Sensor",
+      "tgtC": "Austria",
+      "tR": "Europe",
+      "v": 729,
+      "url": "https://www.wabteccorp.com/newsroom/press-releases/wabtec-to-acquire-frauscher-sensor-technology-group"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Onto Innovation",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Semilab Materials",
+      "tgtC": "Hungary",
+      "tR": "Europe",
+      "v": 545,
+      "url": "https://investors.ontoinnovation.com/news/news-details/2025/Onto-Innovation-Announces-Agreement-to-Acquire-Semilab-Internationals-Materials-Analysis-Business/default.aspx"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Alcon",
+      "acqC": "Switzerland",
+      "aR": "Europe",
+      "tgt": "Lensar",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 430,
+      "url": "https://investor.alcon.com/news-and-events/press-releases/news-details/2025/Alcon-Agrees-to-Acquire-LENSAR-Inc-/default.aspx"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Rocket Lab",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Mynaric",
+      "tgtC": "Germany",
+      "tR": "Europe",
+      "v": 75,
+      "url": "https://investors.rocketlabusa.com/news/news-details/2025/Rocket-Lab-Announces-Intention-to-Acquire-Mynaric-Leading-Laser-Communications-Provider-in-Latest-Strategic-Step-Toward-Becoming-an-End-to-End-Space-Company/default.aspx"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "FOSS",
+      "acqC": "Denmark",
+      "aR": "Europe",
+      "tgt": "Wasatch Photonics",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 39,
+      "url": "https://www.fossanalytics.com/en/news-articles/newsforum/global/2025/foss-group-acquires-wasatch-photonics"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Exaktera",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "autoVimation",
+      "tgtC": "Germany",
+      "tR": "Europe",
+      "v": null,
+      "url": "https://www.exaktera.com/exaktera-acquires-advanced-illumination-491747-140071.html"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Strangeworks",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Quantagonia",
+      "tgtC": "Germany",
+      "tR": "Europe",
+      "v": null,
+      "url": "https://strangeworks.com/press/strangeworks-acquires-quantagonia-to-create-global-leader-in-applied-ai-optimization-and-quantum-computing"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Assurant",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "OptoFidelity",
+      "tgtC": "Finland",
+      "tR": "Europe",
+      "v": null,
+      "url": "https://www.assurant.com/news-insights/news_releases/assurant-expands-automation-capabilities-acquires-optofidelity"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Molex",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Smiths Interconnect",
+      "tgtC": "United Kingdom",
+      "tR": "Europe",
+      "v": null,
+      "url": "https://www.molex.com/en-us/news/molex-announces-agreement-to-acquire-smiths-interconnect-enhancing-its-position-in-aerospace-and-defense"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Astera Labs",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "aiXscale Photonics",
+      "tgtC": "Germany",
+      "tR": "Europe",
+      "v": null,
+      "url": "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-acquire-aixscale-photonics"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Tibidabo Scientific",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "XCAM Scientific",
+      "tgtC": "United Kingdom",
+      "tR": "Europe",
+      "v": null,
+      "url": "https://xcamscientific.com/tibidabo-scientific-industries-expands-space-scientific-imaging-capabilities-with-acquisition-of-xcam"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "FormFactor",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Keystone Photonics",
+      "tgtC": "Germany",
+      "tR": "Europe",
+      "v": null,
+      "url": "https://www.formfactor.com/press-release/formfactor-expands-silicon-photonics-test-capabilities-with-acquisition-of-keystone-photonics/"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "QED Technologies",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Dutch United Instruments",
+      "tgtC": "Netherlands",
+      "tR": "Europe",
+      "v": null,
+      "url": "https://qedmrf.com/about-qed/news-events/"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Quantum Design",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Oxford NanoScience",
+      "tgtC": "United Kingdom",
+      "tR": "Europe",
+      "v": null,
+      "url": ""
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Mycronic",
+      "acqC": "Sweden",
+      "aR": "Europe",
+      "tgt": "Surfx",
+      "tgtC": "",
+      "tR": "USA",
+      "v": null,
+      "url": "https://www.mycronic.com/news-events/our-press-releases/global-technologies-acquires-surfx-in-the-us/"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Sandvik",
+      "acqC": "Sweden",
+      "aR": "Europe",
+      "tgt": "Verisurf",
+      "tgtC": "",
+      "tR": "USA",
+      "v": null,
+      "url": "https://www.home.sandvik/en/news-and-media/news/2025/03/sandvik-to-acquire-3d-metrology-software-provider-verisurf/"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Nordic Semiconductor",
+      "acqC": "Norway",
+      "aR": "Europe",
+      "tgt": "Neuton.AI",
+      "tgtC": "",
+      "tR": "USA",
+      "v": null,
+      "url": "https://www.nordicsemi.com/Nordic-news/2025/06/Nordic-Semiconductor-accelerates-edge-AI-leadership-with-acquisition-of-Neuton-AI"
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "G&H",
+      "acqC": "United Kingdom",
+      "aR": "Europe",
+      "tgt": "Global Photonics",
+      "tgtC": "",
+      "tR": "USA",
+      "v": null,
+      "url": ""
+    },
+    {
+      "yr": 2025,
+      "mo": "",
+      "type": "",
+      "acq": "Prior Scientific",
+      "acqC": "United Kingdom",
+      "aR": "Europe",
+      "tgt": "Kinetic Systems",
+      "tgtC": "",
+      "tR": "USA",
+      "v": null,
+      "url": "https://www.prior.com/news/prior-scientific-instruments-strengthens-global-position-with-strategic-acquisition-of-us-vibration-isolation-specialist"
+    },
+    {
+      "yr": 2024,
+      "mo": "",
+      "type": "",
+      "acq": "Siemens",
+      "acqC": "",
+      "aR": "Europe",
+      "tgt": "Altair",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 10600,
+      "url": "https://investor.altair.com/news-releases/news-release-details/altair-signs-definitive-agreement-siemens-be-acquired-106"
+    },
+    {
+      "yr": 2024,
+      "mo": "",
+      "type": "",
+      "acq": "Infineon",
+      "acqC": "",
+      "aR": "Europe",
+      "tgt": "Cypress",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 9720,
+      "url": "https://www.infineon.com/cms/en/about-infineon/press/press-releases/2019/INFXX201906-074.html"
+    },
+    {
+      "yr": 2024,
+      "mo": "",
+      "type": "",
+      "acq": "Thermo Fisher Scientific",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Olink Holding",
+      "tgtC": "Sweden",
+      "tR": "Europe",
+      "v": 3100,
+      "url": "https://newsroom.thermofisher.com/newsroom/press-releases/press-release-details/2024/Thermo-Fisher-Scientific-Completes-Acquisition-of-Olink-Announces-Commencement-of-Subsequent-Offering-Period/default.aspx"
+    },
+    {
+      "yr": 2024,
+      "mo": "",
+      "type": "",
+      "acq": "SES",
+      "acqC": "Belgium",
+      "aR": "Europe",
+      "tgt": "Intelsat",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 3100,
+      "url": "https://www.intelsat.com/newsroom/ses-to-acquire-intelsat/"
+    },
+    {
+      "yr": 2024,
+      "mo": "",
+      "type": "",
+      "acq": "Nokia",
+      "acqC": "Finland",
+      "aR": "Europe",
+      "tgt": "Infinera",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 2300,
+      "url": "https://www.infinera.com/press-release/nokia-to-acquire-infinera/"
+    },
+    {
+      "yr": 2023,
+      "mo": "",
+      "type": "",
+      "acq": "Broadcom",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "VMware",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 61000,
+      "url": "https://www.lightwaveonline.com/business/mergers-acquisitions/article/14277268/broadcom-to-buy-vmware"
+    },
+    {
+      "yr": 2023,
+      "mo": "",
+      "type": "",
+      "acq": "Colt Technology",
+      "acqC": "United Kingdom",
+      "aR": "Europe",
+      "tgt": "Lumen EMEA business",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 1800,
+      "url": "https://www.lightwaveonline.com/business/mergers-acquisitions/article/14301152/colt-accelerates-customer-reach-with-18b-lumen-emea-acquisition"
+    },
+    {
+      "yr": 2021,
+      "mo": "",
+      "type": "",
+      "acq": "Viasat",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Inmarsat",
+      "tgtC": "",
+      "tR": "Europe",
+      "v": 7300,
+      "url": "https://www.inmarsat.com/en/news/latest-news/corporate/2021/viasat-inmarsat-to-combine.html"
+    },
+    {
+      "yr": 2021,
+      "mo": "",
+      "type": "",
+      "acq": "MKS Instruments",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Atotech",
+      "tgtC": "Germany",
+      "tR": "Europe",
+      "v": 5100,
+      "url": "https://investor.mks.com/news-releases/news-release-details/mks-instruments-announces-closing-atotech-acquisition"
+    },
+    {
+      "yr": 2021,
+      "mo": "",
+      "type": "",
+      "acq": "Qualcomm & SSW Partners",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Veoneer",
+      "tgtC": "Sweden",
+      "tR": "Europe",
+      "v": 4500,
+      "url": "https://www.qualcomm.com/news/releases/2021/10/04/qualcomm-and-ssw-partners-reach-definitive-agreement-acquire-veoneer"
+    },
+    {
+      "yr": 2021,
+      "mo": "",
+      "type": "",
+      "acq": "Vista Equity Partners",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Blue Prism",
+      "tgtC": "United Kingdom",
+      "tR": "Europe",
+      "v": 1500,
+      "url": ""
+    },
+    {
+      "yr": 2019,
+      "mo": "",
+      "type": "",
+      "acq": "Infineon",
+      "acqC": "Germany",
+      "aR": "Europe",
+      "tgt": "Cypress Semiconductor",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 9720,
+      "url": "https://www.infineon.com/cms/en/about-infineon/press/press-releases/2019/INFXX201906-074.html"
+    },
+    {
+      "yr": 2019,
+      "mo": "",
+      "type": "",
+      "acq": "Signify",
+      "acqC": "Netherlands",
+      "aR": "Europe",
+      "tgt": "Cooper Lighting Solutions",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 1400,
+      "url": "https://www.signify.com/global/our-company/news/press-releases/2019/20191015-signify-to-acquire-cooper-lighting-solutions-to-strengthen-its-position-in-attractive-north-american-lighting-market"
+    },
+    {
+      "yr": 2019,
+      "mo": "",
+      "type": "",
+      "acq": "Siemens Healthineers",
+      "acqC": "Germany",
+      "aR": "Europe",
+      "tgt": "Corindus Vascular Robotics",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 1100,
+      "url": "https://www.siemens-healthineers.com/en-us/press-room/press-releases/pr-20190808032shs.html"
+    },
+    {
+      "yr": 2018,
+      "mo": "",
+      "type": "",
+      "acq": "Broadcom",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "CA Technologies",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 18900,
+      "url": ""
+    },
+    {
+      "yr": 2017,
+      "mo": "",
+      "type": "",
+      "acq": "Thermo Fisher Scientific",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Patheon",
+      "tgtC": "",
+      "tR": "Europe",
+      "v": 7200,
+      "url": "https://www.prnewswire.com/news-releases/thermo-fisher-scientific-completes-acquisition-of-patheon-300510547.html"
+    },
+    {
+      "yr": 2017,
+      "mo": "",
+      "type": "",
+      "acq": "Apollo",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Lumileds",
+      "tgtC": "Netherlands",
+      "tR": "Europe",
+      "v": 3300,
+      "url": "https://optics.org/news/8/7/11"
+    },
+    {
+      "yr": 2017,
+      "mo": "",
+      "type": "",
+      "acq": "Prysmian",
+      "acqC": "Italy",
+      "aR": "Europe",
+      "tgt": "General Cable",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 3000,
+      "url": "https://www.prysmiangroup.com/en/press-releases/prysmian-to-acquire-general-cable"
+    },
+    {
+      "yr": 2017,
+      "mo": "",
+      "type": "",
+      "acq": "EQT",
+      "acqC": "Sweden",
+      "aR": "Europe",
+      "tgt": "Lumos Networks",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 950,
+      "url": "https://www.eqtgroup.com/globalassets/newsroom/lmos-eqt-final-2-20-17.pdf"
+    },
+    {
+      "yr": 2016,
+      "mo": "",
+      "type": "",
+      "acq": "Analog Devices",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Linear Technology",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 14936,
+      "url": ""
+    },
+    {
+      "yr": 2016,
+      "mo": "",
+      "type": "",
+      "acq": "ASML",
+      "acqC": "Netherlands",
+      "aR": "Europe",
+      "tgt": "Hermes Microvision",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 3100,
+      "url": "https://www.photonics.com/Articles/ASML_to_Acquire_Hermes_Microvision_for_31B/a60813"
+    },
+    {
+      "yr": 2012,
+      "mo": "",
+      "type": "",
+      "acq": "ASML",
+      "acqC": "Netherlands",
+      "aR": "Europe",
+      "tgt": "Cymer",
+      "tgtC": "",
+      "tR": "USA",
+      "v": 2106,
+      "url": "https://www.asml.com/en/news/press-releases/2012/asml-to-acquire-cymer-to-accelerate-development-of-euv-technology"
+    },
+    {
+      "yr": 2011,
+      "mo": "",
+      "type": "",
+      "acq": "Thermo Fisher Scientific",
+      "acqC": "",
+      "aR": "USA",
+      "tgt": "Dionex",
+      "tgtC": "Belgium",
+      "tR": "Europe",
+      "v": 2100,
+      "url": "https://www.photonics.com/Articles/Thermo_Fisher_Scientific_Inc/a46364"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+[
+    {
+        "acq": "NVIDIA",
+        "acqR": "USA",
+        "tgt": "Arm Limited",
+        "tgtC": "United Kingdom",
+        "tgtR": "Europe",
+        "yr": 2020,
+        "v": 40000,
+        "sector": "CPU/AI IP",
+        "reason": "Blocked by UK CMA, US FTC, and EU regulators over competition and national security concerns. Would have transferred the world's most critical chip IP architecture to US control.",
+        "regulators": ["UK CMA", "US FTC", "EU Commission"]
+    }
+]

@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photonics M&A Intelligence Dashboard — beta v0.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18.2.0",
+            "react-dom": "https://esm.sh/react-dom@18.2.0",
+            "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+            "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+            "recharts": "https://esm.sh/recharts@2.12.7?bundle&deps=react@18.2.0,react-dom@18.2.0"
+        }
+    }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: #111827;
+            color: #E5E7EB;
+            line-height: 1.6;
+        }
+
+        a { color: #FFBD48; text-decoration: none; }
+        a:hover { text-decoration: underline; opacity: 0.9; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+
+        /* Header */
+        .header {
+            background-color: #111827;
+            border-bottom: 2px solid #FFBD48;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+        }
+        .header-content {
+            max-width: 1400px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: flex-start; gap: 40px;
+        }
+        .header-left { display: flex; align-items: center; gap: 20px; flex: 1; }
+        .berry-icon { height: 50px; width: auto; flex-shrink: 0; }
+        .header-text h1 { font-size: 32px; font-weight: 700; color: #F9FAFB; margin-bottom: 8px; }
+        .header-text p { font-size: 13px; color: #9CA3AF; font-weight: 500; letter-spacing: 0.3px; }
+        .header-stats { display: flex; gap: 30px; flex-wrap: wrap; justify-content: flex-end; }
+        .stat-box { text-align: right; }
+        .stat-value { font-size: 28px; font-weight: 700; color: #FFBD48; }
+        .stat-label { font-size: 12px; color: #9CA3AF; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Tabs */
+        .tab-bar {
+            background-color: #111827;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 30px;
+            display: flex; gap: 40px; padding: 0 20px;
+            max-width: 1400px; margin-left: auto; margin-right: auto;
+        }
+        .tab {
+            padding: 16px 0; border: none; background: none; cursor: pointer;
+            font-size: 15px; font-weight: 500; color: #9CA3AF;
+            border-bottom: 3px solid transparent; transition: all 0.3s ease;
+            text-transform: uppercase; letter-spacing: 0.3px;
+        }
+        .tab:hover { color: #F9FAFB; }
+        .tab.active { color: #FFBD48; border-bottom-color: #FFBD48; }
+
+        /* Cards */
+        .card {
+            background-color: #1F2937;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 24px;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            font-size: 18px; font-weight: 700; color: #F9FAFB;
+            margin-bottom: 20px; padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .card-subtitle {
+            font-size: 12px; color: #9CA3AF; text-transform: uppercase;
+            letter-spacing: 0.3px; margin-bottom: 16px;
+        }
+
+        /* Grids */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 20px; }
+
+        /* Stat Callouts */
+        .stat-callout {
+            background-color: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-left: 4px solid #FFBD48;
+            border-radius: 8px; padding: 16px; margin-bottom: 12px;
+        }
+        .stat-callout.jade { border-left-color: #007A6E; }
+        .stat-callout.teal { border-left-color: #51A094; }
+        .stat-callout-label { font-size: 11px; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
+        .stat-callout-value { font-size: 24px; font-weight: 700; color: #F9FAFB; }
+        .stat-callout-meta { font-size: 12px; color: #9CA3AF; margin-top: 6px; }
+
+        /* Tables */
+        .table-container { overflow-x: auto; margin-top: 16px; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background-color: rgba(255,255,255,0.05); }
+        th { padding: 12px 16px; text-align: left; font-weight: 600; font-size: 12px; color: #9CA3AF; border-bottom: 1px solid rgba(255,255,255,0.06); text-transform: uppercase; letter-spacing: 0.3px; }
+        td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 13px; color: #E5E7EB; }
+        tbody tr:hover { background-color: rgba(255,255,255,0.03); }
+        tbody tr:last-child td { border-bottom: none; }
+
+        /* Region Badges */
+        .region-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 12px;
+            font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+        }
+        .region-badge.usa { background: rgba(255,189,72,0.15); color: #FFBD48; }
+        .region-badge.europe { background: rgba(0,122,110,0.2); color: #51A094; }
+        .region-badge.asia { background: rgba(81,160,148,0.15); color: #7CC4B8; }
+        .region-badge.other { background: rgba(128,144,168,0.15); color: #8090A8; }
+
+        /* Acquirer Bar */
+        .acquirer-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .acquirer-label { width: 80px; font-size: 13px; font-weight: 600; color: #E5E7EB; flex-shrink: 0; }
+        .acquirer-bar-bg { flex: 1; height: 24px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+        .acquirer-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+        .acquirer-count { width: 60px; text-align: right; font-size: 13px; font-weight: 600; color: #F9FAFB; flex-shrink: 0; }
+
+        /* Chart Container */
+        .chart-container { width: 100%; height: 320px; margin: 20px 0; }
+        .chart-container.tall { height: 420px; }
+
+        /* Progress Bar */
+        .progress-bar { width: 100%; height: 8px; background-color: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; margin: 12px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #FFBD48 0%, #007A6E 100%); border-radius: 4px; }
+
+        /* Text */
+        .text-large { font-size: 16px; color: #E5E7EB; margin-bottom: 12px; line-height: 1.6; }
+        .text-small { font-size: 12px; color: #9CA3AF; margin-bottom: 8px; }
+
+        .badge { display: inline-block; padding: 4px 12px; background-color: rgba(255,255,255,0.1); color: #E5E7EB; font-size: 11px; font-weight: 600; border-radius: 4px; margin-right: 8px; }
+        .badge.jade { background-color: rgba(0,122,110,0.2); color: #51A094; }
+        .badge.yellow { background-color: rgba(255,189,72,0.15); color: #FFBD48; }
+
+        /* Details link */
+        table a[target="_blank"] { opacity: 0.7; transition: opacity 0.15s; }
+        table a[target="_blank"]:hover { opacity: 1; text-decoration: underline; }
+
+
+        /* Sortable table headers */
+        th.sortable { cursor: pointer; user-select: none; position: relative; padding-right: 24px; }
+        th.sortable:hover { color: #FFBD48; }
+        th.sortable::after { content: '⇅'; position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font-size: 10px; opacity: 0.4; }
+        th.sortable.asc::after { content: '↑'; opacity: 0.9; color: #FFBD48; }
+        th.sortable.desc::after { content: '↓'; opacity: 0.9; color: #FFBD48; }
+
+        /* Search box */
+        .search-box {
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; padding: 10px 16px; color: #E5E7EB; font-size: 14px;
+            font-family: 'Inter', sans-serif; width: 100%; max-width: 400px;
+            outline: none; transition: border-color 0.2s;
+        }
+        .search-box:focus { border-color: #FFBD48; }
+        .search-box::placeholder { color: #6B7280; }
+
+        /* Pagination */
+        .pagination { display: flex; align-items: center; gap: 8px; margin-top: 16px; justify-content: center; flex-wrap: wrap; }
+        .page-btn {
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px; padding: 6px 14px; color: #9CA3AF; font-size: 13px;
+            cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s;
+        }
+        .page-btn:hover { background: rgba(255,255,255,0.1); color: #F9FAFB; }
+        .page-btn.active { background: rgba(255,189,72,0.15); color: #FFBD48; border-color: #FFBD48; }
+        .page-btn:disabled { opacity: 0.3; cursor: default; }
+        .page-info { color: #6B7280; font-size: 13px; margin: 0 8px; }
+
+        /* Latest deals timeline dot */
+        .deal-fresh { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22C55E; margin-right: 8px; flex-shrink: 0; }
+        .deal-recent { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #FFBD48; margin-right: 8px; flex-shrink: 0; }
+
+        /* Loading */
+        .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #FFBD48; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-container { text-align: center; padding: 60px 20px; }
+        .loading-text { margin-top: 16px; color: #9CA3AF; font-size: 14px; }
+
+        /* Footer */
+        .footer {
+            background-color: #0D1117;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 24px 20px; margin-top: 40px;
+            text-align: center; font-size: 12px; color: #6B7280;
+        }
+        .footer-content { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        .footer-berry { height: 16px; width: auto; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Key Risk Findings */
+        .risk-findings { background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.35); border-radius: 12px; padding: 24px 28px; margin-bottom: 24px; }
+        .risk-findings h3 { color: #EF4444; font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+        .risk-finding-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; color: #D1D5DB; font-size: 14px; line-height: 1.6; }
+        .risk-finding-item .arrow { color: #EF4444; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+        .risk-finding-item .highlight { color: #FFBD48; font-weight: 700; }
+        .risk-finding-item .highlight-red { color: #EF4444; font-weight: 700; }
+
+        /* Deal cards */
+        .deal-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 768px) { .deal-cards-grid { grid-template-columns: 1fr; } }
+        .deal-card-header { font-size: 17px; font-weight: 700; color: #F9FAFB; margin-bottom: 2px; }
+        .deal-card-subtitle { font-size: 13px; color: #6B7280; margin-bottom: 16px; }
+        .deal-entry { display: flex; align-items: flex-start; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .deal-entry:last-child { border-bottom: none; }
+        .deal-entry-left { flex: 1; }
+        .deal-entry-name { font-weight: 700; color: #F9FAFB; font-size: 15px; }
+        .deal-entry-name .country { color: #6B7280; font-weight: 400; font-size: 13px; margin-left: 6px; }
+        .deal-entry-meta { font-size: 12px; color: #6B7280; margin-top: 3px; }
+        .deal-entry-value { font-size: 18px; font-weight: 700; text-align: right; white-space: nowrap; margin-left: 16px; }
+        .deal-entry-value.usa-color { color: #FFBD48; }
+        .deal-entry-value.eu-color { color: #51A094; }
+        .badge-blocked { display: inline-block; padding: 2px 8px; background-color: rgba(239,68,68,0.2); color: #EF4444; font-size: 10px; font-weight: 700; border-radius: 4px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Recharts dark overrides */
+        .recharts-default-tooltip { background-color: #1F2937 !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 8px !important; color: #E5E7EB !important; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+            .grid-4, .grid-5 { grid-template-columns: repeat(3, 1fr); }
+            .header-content { flex-direction: column; gap: 20px; }
+            .header-stats { width: 100%; justify-content: flex-start; }
+        }
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
+            .header-text h1 { font-size: 24px; }
+            .stat-value { font-size: 22px; }
+            .tab-bar { gap: 20px; overflow-x: auto; }
+            .tab { padding: 12px 0; font-size: 13px; }
+            .chart-container, .chart-container.tall { height: 280px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="module">
+        import React, { useState, useEffect } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import {
+            LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
+            XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+            ResponsiveContainer, ScatterChart, Scatter,
+        } from 'recharts';
+
+        const h = React.createElement;
+
+        // Default fallback data
+        const DEFAULT_DATA = {
+            lastUpdated: "2026-03-01",
+            total: 1985,
+            euTargetsTotal: 745,
+            totalUSABuyEU: 268,
+            totalEUBuyUSA: 140,
+            totalEUBuyEU: 406,
+            totalAsiaBuyEU: 56,
+            totalDisclosedValue: 261861,
+            totalUSABuyEUValue: 38838,
+            totalEUBuyUSAValue: 13507,
+            targetsByRegion: { "Europe": 745, "USA": 1004, "Asia": 105, "Other": 131 },
+            acquirersByRegion: { "USA": 1180, "Europe": 599, "Asia": 149, "Other": 57 },
+            euByAcquirer: { "Europe": 406, "USA": 268, "Asia": 56, "Other": 15 },
+            euSizeByAcquirer: {
+                "USA": { "avg": 275, "median": 290, "total": 38838, "count": 141 },
+                "Europe": { "avg": 336, "median": 69, "total": 64800, "count": 193 },
+                "Asia": { "avg": 293, "median": 39, "total": 9943, "count": 34 }
+            },
+            yearData: [
+                { "year": 2013, "USA": 44, "Europe": 11, "Asia": 4, "Other": 1 },
+                { "year": 2014, "USA": 31, "Europe": 21, "Asia": 3, "Other": 1 },
+                { "year": 2015, "USA": 24, "Europe": 7, "Asia": 2, "Other": 0 },
+                { "year": 2016, "USA": 37, "Europe": 21, "Asia": 6, "Other": 0 },
+                { "year": 2017, "USA": 59, "Europe": 37, "Asia": 8, "Other": 3 },
+                { "year": 2018, "USA": 79, "Europe": 39, "Asia": 13, "Other": 1 },
+                { "year": 2019, "USA": 88, "Europe": 50, "Asia": 12, "Other": 5 },
+                { "year": 2020, "USA": 72, "Europe": 38, "Asia": 10, "Other": 4 },
+                { "year": 2021, "USA": 123, "Europe": 49, "Asia": 15, "Other": 4 },
+                { "year": 2022, "USA": 94, "Europe": 43, "Asia": 7, "Other": 7 },
+                { "year": 2023, "USA": 94, "Europe": 51, "Asia": 13, "Other": 6 },
+                { "year": 2024, "USA": 161, "Europe": 96, "Asia": 23, "Other": 9 },
+                { "year": 2025, "USA": 286, "Europe": 162, "Asia": 35, "Other": 10 },
+                { "year": 2026, "USA": 68, "Europe": 34, "Asia": 4, "Other": 1, "note": "Jan-Feb only" }
+            ],
+            yearValueData: [
+                { "year": 2013, "USA": 6278, "Europe": 556, "Asia": 0 },
+                { "year": 2014, "USA": 11478, "Europe": 4048, "Asia": 440 },
+                { "year": 2015, "USA": 10862, "Europe": 1196, "Asia": 0 },
+                { "year": 2016, "USA": 13406, "Europe": 4183, "Asia": 200 },
+                { "year": 2017, "USA": 12823, "Europe": 4055, "Asia": 1360 },
+                { "year": 2018, "USA": 10095, "Europe": 4068, "Asia": 1485 },
+                { "year": 2019, "USA": 14228, "Europe": 7521, "Asia": 1028 },
+                { "year": 2020, "USA": 19088, "Europe": 8108, "Asia": 1650 },
+                { "year": 2021, "USA": 26073, "Europe": 21523, "Asia": 3490 },
+                { "year": 2022, "USA": 19571, "Europe": 2897, "Asia": 970 },
+                { "year": 2023, "USA": 14286, "Europe": 5072, "Asia": 1670 },
+                { "year": 2024, "USA": 47278, "Europe": 11042, "Asia": 3705 },
+                { "year": 2025, "USA": 64573, "Europe": 14413, "Asia": 8094 },
+                { "year": 2026, "USA": 8166, "Europe": 1462, "Asia": 0 }
+            ],
+            usaBuyEU: [
+                { "acq": "Viasat", "tgt": "Inmarsat", "tgtC": "United Kingdom", "yr": 2021, "v": 7300, "url": "https://www.inmarsat.com/en/news/latest-news/corporate/2021/viasat-inmarsat-to-combine.html" },
+                { "acq": "Thermo Fisher Scientific", "tgt": "Patheon", "tgtC": "Netherlands", "yr": 2017, "v": 7200, "url": "https://www.prnewswire.com/news-releases/thermo-fisher-scientific-completes-acquisition-of-patheon-300510547.html" },
+                { "acq": "KKR", "tgt": "Spectris", "tgtC": "United Kingdom", "yr": 2025, "v": 5207, "url": "https://media.kkr.com/news-details?news_id=eaf76044-901c-40d7-9413-a7a24f8002d6" },
+                { "acq": "MKS Instruments", "tgt": "Atotech", "tgtC": "Germany", "yr": 2021, "v": 5100, "url": "https://investor.mks.com/news-releases/news-release-details/mks-instruments-announces-closing-atotech-acquisition" },
+                { "acq": "Qualcomm & SSW Partners", "tgt": "Veoneer", "tgtC": "Sweden", "yr": 2021, "v": 4500, "url": "https://www.qualcomm.com/news/releases/2021/10/04/qualcomm-and-ssw-partners-reach-definitive-agreement-acquire-veoneer" },
+                { "acq": "Apollo", "tgt": "Lumileds", "tgtC": "Netherlands", "yr": 2017, "v": 3300, "url": "https://optics.org/news/8/7/11" },
+                { "acq": "Thermo Fisher Scientific", "tgt": "Olink Holding", "tgtC": "Sweden", "yr": 2024, "v": 3100, "url": "https://newsroom.thermofisher.com/newsroom/press-releases/press-release-details/2024/Thermo-Fisher-Scientific-Completes-Acquisition-of-Olink-Announces-Commencement-of-Subsequent-Offering-Period/default.aspx" },
+                { "acq": "Qualcomm", "tgt": "Alphawave Semi", "tgtC": "United Kingdom", "yr": 2025, "v": 2400, "url": "https://www.qualcomm.com/news/releases/2025/06/qualcomm-to-acquire-alphawave-semi" },
+                { "acq": "Thermo Fisher Scientific", "tgt": "Dionex", "tgtC": "Belgium", "yr": 2011, "v": 2100, "url": "https://www.photonics.com/Articles/Thermo_Fisher_Scientific_Inc/a46364" },
+                { "acq": "Vista Equity Partners", "tgt": "Blue Prism", "tgtC": "United Kingdom", "yr": 2021, "v": 1500, "url": "" },
+                { "acq": "IonQ", "tgt": "Oxford Ionics", "tgtC": "United Kingdom", "yr": 2025, "v": 1075, "url": "https://ionq.com/news/ionq-announces-agreement-to-acquire-oxford-ionics-accelerating-path-to-pioneering" },
+                { "acq": "Wabtec", "tgt": "Frauscher Sensor", "tgtC": "Austria", "yr": 2025, "v": 729, "url": "https://www.wabteccorp.com/newsroom/press-releases/wabtec-to-acquire-frauscher-sensor-technology-group" },
+                { "acq": "Onto Innovation", "tgt": "Semilab Materials", "tgtC": "Hungary", "yr": 2025, "v": 545, "url": "https://investors.ontoinnovation.com/news/news-details/2025/Onto-Innovation-Announces-Agreement-to-Acquire-Semilab-Internationals-Materials-Analysis-Business/default.aspx" },
+                { "acq": "Rocket Lab", "tgt": "Mynaric", "tgtC": "Germany", "yr": 2025, "v": 75, "url": "https://investors.rocketlabusa.com/news/news-details/2025/Rocket-Lab-Announces-Intention-to-Acquire-Mynaric-Leading-Laser-Communications-Provider-in-Latest-Strategic-Step-Toward-Becoming-an-End-to-End-Space-Company/default.aspx" },
+                { "acq": "Exaktera", "tgt": "autoVimation", "tgtC": "Germany", "yr": 2025, "v": null, "url": "https://www.exaktera.com/exaktera-acquires-advanced-illumination-491747-140071.html" },
+                { "acq": "Strangeworks", "tgt": "Quantagonia", "tgtC": "Germany", "yr": 2025, "v": null, "url": "https://strangeworks.com/press/strangeworks-acquires-quantagonia-to-create-global-leader-in-applied-ai-optimization-and-quantum-computing" },
+                { "acq": "Assurant", "tgt": "OptoFidelity", "tgtC": "Finland", "yr": 2025, "v": null, "url": "https://www.assurant.com/news-insights/news_releases/assurant-expands-automation-capabilities-acquires-optofidelity" },
+                { "acq": "Molex", "tgt": "Smiths Interconnect", "tgtC": "United Kingdom", "yr": 2025, "v": null, "url": "https://www.molex.com/en-us/news/molex-announces-agreement-to-acquire-smiths-interconnect-enhancing-its-position-in-aerospace-and-defense" },
+                { "acq": "Astera Labs", "tgt": "aiXscale Photonics", "tgtC": "Germany", "yr": 2025, "v": null, "url": "https://ir.asteralabs.com/news-releases/news-release-details/astera-labs-acquire-aixscale-photonics" },
+                { "acq": "Teledyne", "tgt": "DD-Scientific", "tgtC": "United Kingdom", "yr": 2026, "v": null, "url": "https://www.teledyne.com/en-us/news/Pages/teledyne-acquires-dd-scientific.aspx" },
+                { "acq": "Tibidabo Scientific", "tgt": "XCAM Scientific", "tgtC": "United Kingdom", "yr": 2025, "v": null, "url": "https://xcamscientific.com/tibidabo-scientific-industries-expands-space-scientific-imaging-capabilities-with-acquisition-of-xcam" },
+                { "acq": "FormFactor", "tgt": "Keystone Photonics", "tgtC": "Germany", "yr": 2025, "v": null, "url": "https://www.formfactor.com/press-release/formfactor-expands-silicon-photonics-test-capabilities-with-acquisition-of-keystone-photonics/" },
+                { "acq": "QED Technologies", "tgt": "Dutch United Instruments", "tgtC": "Netherlands", "yr": 2025, "v": null, "url": "https://qedmrf.com/about-qed/news-events/" },
+                { "acq": "Quantum Design", "tgt": "Oxford NanoScience", "tgtC": "United Kingdom", "yr": 2025, "v": null, "url": "" }
+            ],
+            euBuyUSA: [
+                { "acq": "Siemens", "acqC": "Germany", "tgt": "Altair", "yr": 2024, "v": 10600, "url": "https://investor.altair.com/news-releases/news-release-details/altair-signs-definitive-agreement-siemens-be-acquired-106" },
+                { "acq": "Infineon", "acqC": "Germany", "tgt": "Cypress Semiconductor", "yr": 2019, "v": 9720, "url": "https://www.infineon.com/cms/en/about-infineon/press/press-releases/2019/INFXX201906-074.html" },
+                { "acq": "SES", "acqC": "Belgium", "tgt": "Intelsat", "yr": 2024, "v": 3100, "url": "https://www.intelsat.com/newsroom/ses-to-acquire-intelsat/" },
+                { "acq": "ASML", "acqC": "Netherlands", "tgt": "Hermes Microvision", "yr": 2016, "v": 3100, "url": "https://www.photonics.com/Articles/ASML_to_Acquire_Hermes_Microvision_for_31B/a60813" },
+                { "acq": "Prysmian", "acqC": "Italy", "tgt": "General Cable", "yr": 2017, "v": 3000, "url": "https://www.prysmiangroup.com/en/press-releases/prysmian-to-acquire-general-cable" },
+                { "acq": "Infineon", "acqC": "Germany", "tgt": "Marvell Automotive Ethernet", "yr": 2025, "v": 2500, "url": "https://www.marvell.com/company/newsroom/marvell-sells-automotive-ethernet-business-to-infineon.html" },
+                { "acq": "Nokia", "acqC": "Finland", "tgt": "Infinera", "yr": 2024, "v": 2300, "url": "https://www.infinera.com/press-release/nokia-to-acquire-infinera/" },
+                { "acq": "ASML", "acqC": "Netherlands", "tgt": "Cymer", "yr": 2012, "v": 2106, "url": "https://www.asml.com/en/news/press-releases/2012/asml-to-acquire-cymer-to-accelerate-development-of-euv-technology" },
+                { "acq": "Colt Technology", "acqC": "United Kingdom", "tgt": "Lumen EMEA business", "yr": 2023, "v": 1800, "url": "https://www.lightwaveonline.com/business/mergers-acquisitions/article/14301152/colt-accelerates-customer-reach-with-18b-lumen-emea-acquisition" },
+                { "acq": "Signify", "acqC": "Netherlands", "tgt": "Cooper Lighting Solutions", "yr": 2019, "v": 1400, "url": "https://www.signify.com/global/our-company/news/press-releases/2019/20191015-signify-to-acquire-cooper-lighting-solutions-to-strengthen-its-position-in-attractive-north-american-lighting-market" },
+                { "acq": "Siemens Healthineers", "acqC": "Germany", "tgt": "Corindus Vascular Robotics", "yr": 2019, "v": 1100, "url": "https://www.siemens-healthineers.com/en-us/press-room/press-releases/pr-20190808032shs.html" },
+                { "acq": "EQT", "acqC": "Sweden", "tgt": "Lumos Networks", "yr": 2017, "v": 950, "url": "https://www.eqtgroup.com/globalassets/newsroom/lmos-eqt-final-2-20-17.pdf" },
+                { "acq": "STMicroelectronics", "acqC": "Switzerland", "tgt": "NXP MEMS business", "yr": 2025, "v": 1026, "url": "https://newsroom.st.com/media-center/press-item.html/c3350.html" },
+                { "acq": "Alcon", "acqC": "Switzerland", "tgt": "Lensar", "yr": 2025, "v": 430, "url": "https://investor.alcon.com/news-and-events/press-releases/news-details/2025/Alcon-Agrees-to-Acquire-LENSAR-Inc-/default.aspx" },
+                { "acq": "FOSS", "acqC": "Denmark", "tgt": "Wasatch Photonics", "yr": 2025, "v": 39, "url": "https://www.fossanalytics.com/en/news-articles/newsforum/global/2025/foss-group-acquires-wasatch-photonics" },
+                { "acq": "Mycronic", "acqC": "Sweden", "tgt": "Surfx", "yr": 2025, "v": null, "url": "https://www.mycronic.com/news-events/our-press-releases/global-technologies-acquires-surfx-in-the-us/" },
+                { "acq": "Sandvik", "acqC": "Sweden", "tgt": "Verisurf", "yr": 2025, "v": null, "url": "https://www.home.sandvik/en/news-and-media/news/2025/03/sandvik-to-acquire-3d-metrology-software-provider-verisurf/" },
+                { "acq": "Nordic Semiconductor", "acqC": "Norway", "tgt": "Neuton.AI", "yr": 2025, "v": null, "url": "https://www.nordicsemi.com/Nordic-news/2025/06/Nordic-Semiconductor-accelerates-edge-AI-leadership-with-acquisition-of-Neuton-AI" },
+                { "acq": "G&H", "acqC": "United Kingdom", "tgt": "Global Photonics", "yr": 2025, "v": null, "url": "" },
+                { "acq": "Prior Scientific", "acqC": "United Kingdom", "tgt": "Kinetic Systems", "yr": 2025, "v": null, "url": "https://www.prior.com/news/prior-scientific-instruments-strengthens-global-position-with-strategic-acquisition-of-us-vibration-isolation-specialist" }
+            ],
+            topDeals: [
+                { "yr": 2023, "acq": "Broadcom", "aR": "USA", "tgt": "VMware", "tR": "USA", "v": 61000, "url": "https://www.lightwaveonline.com/business/mergers-acquisitions/article/14277268/broadcom-to-buy-vmware" },
+                { "yr": 2025, "acq": "AT&T", "aR": "USA", "tgt": "EchoStar Spectrum", "tR": "USA", "v": 23000, "url": "" },
+                { "yr": 2025, "acq": "Skyworks", "aR": "USA", "tgt": "Qorvo", "tR": "USA", "v": 22000, "url": "https://www.qorvo.com/newsroom/news/2025/skyworks-and-qorvo-to-combine-to-create-22-billion-us-based-leader" },
+                { "yr": 2018, "acq": "Broadcom", "aR": "USA", "tgt": "CA Technologies", "tR": "USA", "v": 18900, "url": "" },
+                { "yr": 2016, "acq": "Analog Devices", "aR": "USA", "tgt": "Linear Technology", "tR": "USA", "v": 14936, "url": "" },
+                { "yr": 2025, "acq": "Amphenol", "aR": "USA", "tgt": "CommScope CCS", "tR": "USA", "v": 10500, "url": "https://investors.amphenol.com/news-and-events/news-details/2025/Amphenol-Corporation-to-Acquire-Connectivity-and-Cable-Solutions-Business-From-CommScope/default.aspx" },
+                { "yr": 2025, "acq": "Thoma Bravo", "aR": "USA", "tgt": "Boeing Digital Aviation", "tR": "USA", "v": 10550, "url": "https://investors.boeing.com/investors/news/press-release-details/2025/Boeing-to-Sell-Portions-of-Digital-Aviation-Solutions-to-Thoma-Bravo-for-10-55-Billion/default.aspx" },
+                { "yr": 2024, "acq": "Siemens", "aR": "Europe", "tgt": "Altair", "tR": "USA", "v": 10600, "url": "https://investor.altair.com/news-releases/news-release-details/altair-signs-definitive-agreement-siemens-be-acquired-106" },
+                { "yr": 2024, "acq": "Infineon", "aR": "Europe", "tgt": "Cypress", "tR": "USA", "v": 9720, "url": "https://www.infineon.com/cms/en/about-infineon/press/press-releases/2019/INFXX201906-074.html" },
+                { "yr": 2021, "acq": "Viasat", "aR": "USA", "tgt": "Inmarsat", "tR": "Europe", "v": 7300, "url": "https://www.inmarsat.com/en/news/latest-news/corporate/2021/viasat-inmarsat-to-combine.html" },
+                { "yr": 2025, "acq": "onsemi", "aR": "USA", "tgt": "Allegro MicroSystems", "tR": "USA", "v": 6900, "url": "https://www.onsemi.com/company/news-media/press-announcements/en/onsemi-proposes-to-acquire-allegro-microsystems-for-35-10-per-share-in-cashh" },
+                { "yr": 2017, "acq": "Thermo Fisher Scientific", "aR": "USA", "tgt": "Patheon", "tR": "Europe", "v": 7200, "url": "https://www.prnewswire.com/news-releases/thermo-fisher-scientific-completes-acquisition-of-patheon-300510547.html" }
+            ],
+            blockedDeals: [
+                { "acq": "NVIDIA", "acqR": "USA", "tgt": "Arm Limited", "tgtC": "United Kingdom", "tgtR": "Europe", "yr": 2020, "v": 40000, "sector": "CPU/AI IP", "reason": "Blocked by UK CMA, US FTC, and EU regulators over competition and national security concerns. Would have transferred the world's most critical chip IP architecture to US control.", "regulators": ["UK CMA", "US FTC", "EU Commission"] }
+            ],
+            usaBuyEUPerYear: [
+                { "yr": 2013, "n": 6 }, { "yr": 2014, "n": 8 }, { "yr": 2015, "n": 7 },
+                { "yr": 2016, "n": 14 }, { "yr": 2017, "n": 17 }, { "yr": 2018, "n": 22 },
+                { "yr": 2019, "n": 25 }, { "yr": 2020, "n": 19 }, { "yr": 2021, "n": 26 },
+                { "yr": 2022, "n": 19 }, { "yr": 2023, "n": 20 }, { "yr": 2024, "n": 32 },
+                { "yr": 2025, "n": 41 }, { "yr": 2026, "n": 12 }
+            ]
+        };
+
+        const CHART_COLORS = { europe: "#007A6E", usa: "#FFBD48", asia: "#51A094", other: "#8090A8" };
+        const REGION_COLOR_MAP = { USA: CHART_COLORS.usa, Europe: CHART_COLORS.europe, Asia: CHART_COLORS.asia, Other: CHART_COLORS.other };
+
+        // Dark theme tooltip props
+        const DARK_TOOLTIP = {
+            contentStyle: { backgroundColor: '#1F2937', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#E5E7EB' },
+            labelStyle: { color: '#F9FAFB' },
+            itemStyle: { color: '#E5E7EB' }
+        };
+        const DARK_GRID = { strokeDasharray: '3 3', stroke: 'rgba(255,255,255,0.08)' };
+        const DARK_XAXIS = { stroke: '#6B7280', tick: { fill: '#9CA3AF', fontSize: 12 } };
+        const DARK_YAXIS = { stroke: '#6B7280', tick: { fill: '#9CA3AF', fontSize: 12 } };
+
+        // Pie chart label
+        const RADIAN = Math.PI / 180;
+        const renderPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
+            const radius = outerRadius + 25;
+            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+            return h('text', { x, y, fill: '#E5E7EB', textAnchor: x > cx ? 'start' : 'end', dominantBaseline: 'central', fontSize: 12 },
+                name + ' ' + (percent * 100).toFixed(0) + '%');
+        };
+
+        const BerryIcon = () => h('img', { src: 'cloudberryvc-icon.svg', className: 'berry-icon', alt: 'Cloudberry VC' });
+        const BerryIconSmall = () => h('img', { src: 'cloudberryvc-icon.svg', className: 'footer-berry', alt: 'Cloudberry VC' });
+
+        const RegionBadge = ({ region }) => {
+            const cls = region === 'USA' ? 'usa' : region === 'Europe' ? 'europe' : region === 'Asia' ? 'asia' : 'other';
+            return h('span', { className: 'region-badge ' + cls }, region);
+        };
+
+        const EpicLink = ({ children }) => h('a', { href: 'https://photonics-index.org/ma/', target: '_blank' }, children || 'EPIC');
+
+        const transformData = (data) => {
+            const yearDataWithTotals = data.yearData.map(row => ({
+                ...row, total: (row.USA || 0) + (row.Europe || 0) + (row.Asia || 0) + (row.Other || 0)
+            }));
+            const yearValueDataWithTotals = data.yearValueData.map(row => ({
+                ...row, total: (row.USA || 0) + (row.Europe || 0) + (row.Asia || 0)
+            }));
+            return { ...data, yearDataWithTotals, yearValueDataWithTotals };
+        };
+
+        // ── App ──
+        const App = () => {
+            const [data, setData] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [activeTab, setActiveTab] = useState('overview');
+
+            useEffect(() => {
+                (async () => {
+                    try {
+                        const r = await fetch('data.json');
+                        setData(transformData(r.ok ? await r.json() : DEFAULT_DATA));
+                    } catch { setData(transformData(DEFAULT_DATA)); }
+                    finally { setLoading(false); }
+                })();
+            }, []);
+
+            if (loading) return h('div', { className: 'loading-container' }, h('div', { className: 'loading-spinner' }), h('div', { className: 'loading-text' }, 'Loading dashboard...'));
+            if (!data) return h('div', { className: 'loading-container' }, h('div', { className: 'loading-text' }, 'Error loading data'));
+
+            return h(React.Fragment, null,
+                h(Header, { data }),
+                h(TabBar, { activeTab, setActiveTab }),
+                h('div', { className: 'container' },
+                    activeTab === 'overview' ? h(OverviewTab, { data }) : null,
+                    activeTab === 'eutargets' ? h(EUTargetsTab, { data }) : null,
+                    activeTab === 'flow' ? h(FlowTab, { data }) : null,
+                    activeTab === 'timeline' ? h(TimelineTab, { data }) : null,
+                    activeTab === 'iprisk' ? h(IPRiskTab, { data }) : null,
+                    activeTab === 'latest' ? h(LatestDealsTab, { data }) : null,
+                    activeTab === 'alldata' ? h(AllDataTab, { data }) : null
+                ),
+                h(FooterSection, { data })
+            );
+        };
+
+        // ── Header ──
+        const Header = ({ data }) =>
+            h('div', { className: 'header' },
+                h('div', { className: 'header-content' },
+                    h('div', { className: 'header-left' },
+                        h(BerryIcon),
+                        h('div', { className: 'header-text' },
+                            h('h1', null, 'Photonics M&A Intelligence Dashboard ', h('span', { style: { fontSize: '14px', fontWeight: 500, color: '#9CA3AF', verticalAlign: 'super' } }, 'beta v0.1')),
+                            h('p', null, h(EpicLink), ' Photonics Index')
+                        )
+                    ),
+                    h('div', { className: 'header-stats' },
+                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.total.toLocaleString()), h('div', { className: 'stat-label' }, 'Total Deals')),
+                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, '$' + (data.totalDisclosedValue / 1000).toFixed(1) + 'B'), h('div', { className: 'stat-label' }, 'Disclosed Value')),
+                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.euTargetsTotal.toLocaleString()), h('div', { className: 'stat-label' }, 'EU Targets')),
+                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.totalUSABuyEU), h('div', { className: 'stat-label' }, 'USA→EU')),
+                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.totalAsiaBuyEU), h('div', { className: 'stat-label' }, 'Asia→EU'))
+                    )
+                )
+            );
+
+        // ── TabBar ──
+        const TabBar = ({ activeTab, setActiveTab }) =>
+            h('div', { className: 'tab-bar' },
+                h('button', { className: 'tab' + (activeTab === 'overview' ? ' active' : ''), onClick: () => setActiveTab('overview') }, 'Overview'),
+                h('button', { className: 'tab' + (activeTab === 'eutargets' ? ' active' : ''), onClick: () => setActiveTab('eutargets') }, 'EU Targets'),
+                h('button', { className: 'tab' + (activeTab === 'flow' ? ' active' : ''), onClick: () => setActiveTab('flow') }, 'USA ⇄ EU Flow'),
+                h('button', { className: 'tab' + (activeTab === 'timeline' ? ' active' : ''), onClick: () => setActiveTab('timeline') }, 'Timeline'),
+                h('button', { className: 'tab' + (activeTab === 'iprisk' ? ' active' : ''), onClick: () => setActiveTab('iprisk') }, 'IP Risk'),
+                h('button', { className: 'tab' + (activeTab === 'latest' ? ' active' : ''), onClick: () => setActiveTab('latest') }, 'Latest Deals'),
+                h('button', { className: 'tab' + (activeTab === 'alldata' ? ' active' : ''), onClick: () => setActiveTab('alldata') }, 'All Data')
+            );
+
+        // ── Overview Tab ──
+        const OverviewTab = ({ data }) => {
+            const pieData = Object.entries(data.targetsByRegion).map(([name, value]) => ({ name, value }));
+            const acqEntries = Object.entries(data.acquirersByRegion);
+            const maxAcq = Math.max(...acqEntries.map(e => e[1]));
+
+            return h('div', { className: 'tab-content active' },
+                // Stat cards row
+                h('div', { className: 'grid-5' },
+                    h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'Total Deals'), h('div', { className: 'stat-callout-value' }, data.total.toLocaleString())),
+                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'EU Targets'), h('div', { className: 'stat-callout-value' }, data.euTargetsTotal.toLocaleString())),
+                    h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'USA → EU'), h('div', { className: 'stat-callout-value' }, data.totalUSABuyEU.toLocaleString())),
+                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'EU → USA'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyUSA.toLocaleString())),
+                    h('div', { className: 'stat-callout teal' }, h('div', { className: 'stat-callout-label' }, 'Disclosed Value'), h('div', { className: 'stat-callout-value' }, '$' + (data.totalDisclosedValue / 1000).toFixed(1) + 'B'))
+                ),
+
+                // Pie + Acquirer bars
+                h('div', { className: 'grid-2' },
+                    h('div', { className: 'card' },
+                        h('div', { className: 'card-header' }, 'Acquired Companies by Region'),
+                        h(ResponsiveContainer, { width: '100%', height: 320 },
+                            h(PieChart, null,
+                                h(Pie, { data: pieData, cx: '50%', cy: '50%', innerRadius: 60, outerRadius: 100, paddingAngle: 2, dataKey: 'value', label: renderPieLabel },
+                                    pieData.map((entry, idx) => h(Cell, { key: idx, fill: REGION_COLOR_MAP[entry.name] || '#8090A8' }))
+                                ),
+                                h(Tooltip, DARK_TOOLTIP)
+                            )
+                        )
+                    ),
+                    h('div', { className: 'card' },
+                        h('div', { className: 'card-header' }, 'Acquirers by Region'),
+                        h('div', { style: { padding: '20px 0' } },
+                            acqEntries.map(([region, count]) =>
+                                h('div', { className: 'acquirer-row', key: region },
+                                    h('div', { className: 'acquirer-label' }, h(RegionBadge, { region })),
+                                    h('div', { className: 'acquirer-bar-bg' },
+                                        h('div', { className: 'acquirer-bar-fill', style: { width: (count / maxAcq * 100) + '%', backgroundColor: REGION_COLOR_MAP[region] || '#8090A8' } })
+                                    ),
+                                    h('div', { className: 'acquirer-count' }, count.toLocaleString())
+                                )
+                            )
+                        )
+                    )
+                ),
+
+                // Charts
+                h('div', { className: 'grid-2' },
+                    h('div', { className: 'card' },
+                        h('div', { className: 'card-header' }, 'Deal Volume Trend'),
+                        h(ResponsiveContainer, { width: '100%', height: 320 },
+                            h(BarChart, { data: data.yearDataWithTotals },
+                                h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS), h(Tooltip, DARK_TOOLTIP), h(Legend, null),
+                                h(Bar, { dataKey: 'USA', stackId: 'a', fill: CHART_COLORS.usa }),
+                                h(Bar, { dataKey: 'Europe', stackId: 'a', fill: CHART_COLORS.europe }),
+                                h(Bar, { dataKey: 'Asia', stackId: 'a', fill: CHART_COLORS.asia }),
+                                h(Bar, { dataKey: 'Other', stackId: 'a', fill: CHART_COLORS.other })
+                            )
+                        )
+                    ),
+                    h('div', { className: 'card' },
+                        h('div', { className: 'card-header' }, 'Disclosed Deal Value Trend ($M)'),
+                        h(ResponsiveContainer, { width: '100%', height: 320 },
+                            h(BarChart, { data: data.yearValueDataWithTotals },
+                                h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS), h(Tooltip, DARK_TOOLTIP), h(Legend, null),
+                                h(Bar, { dataKey: 'USA', stackId: 'a', fill: CHART_COLORS.usa }),
+                                h(Bar, { dataKey: 'Europe', stackId: 'a', fill: CHART_COLORS.europe }),
+                                h(Bar, { dataKey: 'Asia', stackId: 'a', fill: CHART_COLORS.asia })
+                            )
+                        )
+                    )
+                ),
+
+                // Top Deals Table
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Top Deals by Value'),
+                    h('div', { className: 'table-container' },
+                        h('table', null,
+                            h('thead', null, h('tr', null, h('th', null, 'Year'), h('th', null, 'Acquirer'), h('th', null, 'Region'), h('th', null, 'Target'), h('th', null, 'Region'), h('th', null, 'Value ($M)'), h('th', { style: { width: '52px', textAlign: 'center' } }, ''))),
+                            h('tbody', null,
+                                data.topDeals.map((deal, idx) =>
+                                    h('tr', { key: idx },
+                                        h('td', null, deal.yr),
+                                        h('td', null, h('strong', null, deal.acq)),
+                                        h('td', null, h(RegionBadge, { region: deal.aR })),
+                                        h('td', null, deal.tgt, deal.tgt === 'Arm Limited' ? h('span', { className: 'badge-blocked', style: { marginLeft: '8px' } }, 'BLOCKED') : null),
+                                        h('td', null, h(RegionBadge, { region: deal.tR })),
+                                        h('td', null, '$' + deal.v.toLocaleString()),
+                                        h('td', { style: { textAlign: 'center' } }, deal.url ? h('a', { href: deal.url, target: '_blank', rel: 'noopener noreferrer', style: { color: '#FFBD48', textDecoration: 'none', fontSize: '12px' }, title: 'View deal details' }, 'Details \u2197') : null)
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        };
+
+        // ── EU Targets Tab ──
+        const EUTargetsTab = ({ data }) =>
+            h('div', null,
+                h('div', { className: 'grid-3' },
+                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'EU Targets Acquired'), h('div', { className: 'stat-callout-value' }, data.euTargetsTotal.toLocaleString()), h('div', { className: 'stat-callout-meta' }, ((data.euTargetsTotal / data.total) * 100).toFixed(1) + '% of global total')),
+                    h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'USA Buyers of EU'), h('div', { className: 'stat-callout-value' }, data.totalUSABuyEU.toLocaleString()), h('div', { className: 'stat-callout-meta' }, ((data.totalUSABuyEU / data.euTargetsTotal) * 100).toFixed(1) + '% of EU targets')),
+                    h('div', { className: 'stat-callout teal' }, h('div', { className: 'stat-callout-label' }, 'EU-to-EU Acquisitions'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyEU.toLocaleString()), h('div', { className: 'stat-callout-meta' }, ((data.totalEUBuyEU / data.euTargetsTotal) * 100).toFixed(1) + '% of EU targets'))
+                ),
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'EU Targets by Acquirer Region'),
+                    h(ResponsiveContainer, { width: '100%', height: 320 },
+                        h(BarChart, { data: [{ name: 'Europe', value: data.euByAcquirer.Europe }, { name: 'USA', value: data.euByAcquirer.USA }, { name: 'Asia', value: data.euByAcquirer.Asia }, { name: 'Other', value: data.euByAcquirer.Other }] },
+                            h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'name', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS), h(Tooltip, DARK_TOOLTIP),
+                            h(Bar, { dataKey: 'value', name: 'Acquisitions' },
+                                h(Cell, { fill: CHART_COLORS.europe }), h(Cell, { fill: CHART_COLORS.usa }), h(Cell, { fill: CHART_COLORS.asia }), h(Cell, { fill: CHART_COLORS.other })
+                            )
+                        )
+                    ),
+                    h('table', null,
+                        h('thead', null, h('tr', null, h('th', null, 'Acquirer Region'), h('th', { style: { textAlign: 'right' } }, 'Transactions'), h('th', { style: { textAlign: 'right' } }, '% of EU Total'))),
+                        h('tbody', null,
+                            Object.entries(data.euByAcquirer).map(([region, count]) =>
+                                h('tr', { key: region }, h('td', null, h(RegionBadge, { region })), h('td', { style: { textAlign: 'right' } }, count.toLocaleString()), h('td', { style: { textAlign: 'right' } }, ((count / data.euTargetsTotal) * 100).toFixed(1) + '%'))
+                            )
+                        )
+                    )
+                ),
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'EU Target Valuation Analysis'),
+                    h('div', { className: 'grid-3' },
+                        h('div', null, h('div', { className: 'card-subtitle' }, 'USA Acquirers'),
+                            h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'Total Value'), h('div', { className: 'stat-callout-value' }, '$' + (data.euSizeByAcquirer.USA.total / 1000).toFixed(1) + 'B'), h('div', { className: 'stat-callout-meta' }, data.euSizeByAcquirer.USA.count + ' deals')),
+                            h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'Average Deal Size'), h('div', { className: 'stat-callout-value' }, '$' + data.euSizeByAcquirer.USA.avg + 'M'), h('div', { className: 'stat-callout-meta' }, 'Median: $' + data.euSizeByAcquirer.USA.median + 'M'))
+                        ),
+                        h('div', null, h('div', { className: 'card-subtitle' }, 'EU Acquirers'),
+                            h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'Total Value'), h('div', { className: 'stat-callout-value' }, '$' + (data.euSizeByAcquirer.Europe.total / 1000).toFixed(1) + 'B'), h('div', { className: 'stat-callout-meta' }, data.euSizeByAcquirer.Europe.count + ' deals')),
+                            h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'Average Deal Size'), h('div', { className: 'stat-callout-value' }, '$' + data.euSizeByAcquirer.Europe.avg + 'M'), h('div', { className: 'stat-callout-meta' }, 'Median: $' + data.euSizeByAcquirer.Europe.median + 'M'))
+                        ),
+                        h('div', null, h('div', { className: 'card-subtitle' }, 'Asia Acquirers'),
+                            h('div', { className: 'stat-callout teal' }, h('div', { className: 'stat-callout-label' }, 'Total Value'), h('div', { className: 'stat-callout-value' }, '$' + (data.euSizeByAcquirer.Asia.total / 1000).toFixed(1) + 'B'), h('div', { className: 'stat-callout-meta' }, data.euSizeByAcquirer.Asia.count + ' deals')),
+                            h('div', { className: 'stat-callout teal' }, h('div', { className: 'stat-callout-label' }, 'Average Deal Size'), h('div', { className: 'stat-callout-value' }, '$' + data.euSizeByAcquirer.Asia.avg + 'M'), h('div', { className: 'stat-callout-meta' }, 'Median: $' + data.euSizeByAcquirer.Asia.median + 'M'))
+                        )
+                    )
+                ),
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Strategic Insights'),
+                    h('div', { className: 'text-large' }, 'European photonics companies represent a prime acquisition target for global investors. USA-based acquirers have pursued larger, strategic acquisitions averaging $' + data.euSizeByAcquirer.USA.avg + 'M, reflecting interest in complementary technologies and market access.'),
+                    h('div', { className: 'text-large' }, 'Intra-European consolidation, while substantial at ' + data.totalEUBuyEU + ' transactions, favors smaller deals ($' + data.euSizeByAcquirer.Europe.avg + 'M average), suggesting regional roll-up and efficiency plays rather than large-scale strategic consolidations.')
+                )
+            );
+
+        // ── Flow Tab ──
+        const RiskFinding = ({ children }) => h('div', { className: 'risk-finding-item' }, h('span', { className: 'arrow' }, '→'), h('span', null, ...children));
+        const HL = ({ children }) => h('span', { className: 'highlight' }, children);
+        const HLR = ({ children }) => h('span', { className: 'highlight-red' }, children);
+
+        const FlowTab = ({ data }) => {
+            const medianRatio = (data.euSizeByAcquirer.USA.median / data.euSizeByAcquirer.Europe.median).toFixed(0);
+            const capitalImbalance = (data.totalUSABuyEUValue / data.totalEUBuyUSAValue).toFixed(1);
+            const usaPctEU = ((data.totalUSABuyEU / data.euTargetsTotal) * 100).toFixed(1);
+            // 2024+2025 USA→EU deals
+            const recent = data.usaBuyEUPerYear.filter(y => y.yr >= 2024).reduce((s, y) => s + y.n, 0);
+
+            // Build blocked deal entries for notable list
+            const blockedEntries = (data.blockedDeals || []).map(d => ({ name: d.tgt, country: d.tgtC, acq: d.acq, yr: d.yr, sector: d.sector || '', v: d.v, blocked: true, note: 'blocked by regulators' }));
+            const totalBlockedValue = (data.blockedDeals || []).reduce((s, d) => s + (d.v || 0), 0);
+
+            // Notable deals for cards
+            const notableUSBuys = [
+                ...blockedEntries,
+                { name: 'Inmarsat', country: 'UK', acq: 'Viasat', yr: 2021, sector: 'Satellite connectivity', v: 7300 },
+                { name: 'Atotech', country: 'DE', acq: 'MKS Instruments', yr: 2021, sector: 'Semiconductor chemistry', v: 5100 },
+                { name: 'Spectris', country: 'UK', acq: 'KKR', yr: 2025, sector: 'Precision instrumentation', v: 5207 },
+                { name: 'Veoneer', country: 'SE', acq: 'Qualcomm & SSW', yr: 2021, sector: 'Automotive LiDAR/sensing', v: 4500 },
+                { name: 'Olink Holding', country: 'SE', acq: 'Thermo Fisher', yr: 2024, sector: 'Proteomics/biotech', v: 3100 },
+                { name: 'Alphawave Semi', country: 'UK', acq: 'Qualcomm', yr: 2025, sector: 'High-speed connectivity IP', v: 2400 },
+                { name: 'Oxford Ionics', country: 'UK', acq: 'IonQ', yr: 2025, sector: 'Quantum computing', v: 1075 }
+            ];
+            const notableEUBuys = [
+                { name: 'Siemens', country: 'Germany', tgt: 'Altair', yr: 2024, v: 10600 },
+                { name: 'Infineon', country: 'Germany', tgt: 'Cypress Semiconductor', yr: 2019, v: 9720 },
+                { name: 'SES', country: 'Belgium', tgt: 'Intelsat', yr: 2024, v: 3100 },
+                { name: 'ASML', country: 'Netherlands', tgt: 'Hermes Microvision', yr: 2016, v: 3100 },
+                { name: 'Prysmian', country: 'Italy', tgt: 'General Cable', yr: 2017, v: 3000 },
+                { name: 'Infineon', country: 'Germany', tgt: 'Marvell Auto Ethernet', yr: 2025, v: 2500 },
+                { name: 'Nokia', country: 'Finland', tgt: 'Infinera', yr: 2024, v: 2300 }
+            ];
+
+            return h('div', { className: 'tab-content active' },
+                h('div', { className: 'grid-3' },
+                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'USA → EU Deals'), h('div', { className: 'stat-callout-value' }, data.totalUSABuyEU), h('div', { className: 'stat-callout-meta' }, '$' + (data.totalUSABuyEUValue / 1000).toFixed(1) + 'B disclosed value')),
+                    h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'EU → USA Deals'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyUSA), h('div', { className: 'stat-callout-meta' }, '$' + (data.totalEUBuyUSAValue / 1000).toFixed(1) + 'B disclosed value')),
+                    h('div', { className: 'stat-callout teal' }, h('div', { className: 'stat-callout-label' }, 'EU → EU Deals'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyEU), h('div', { className: 'stat-callout-meta' }, 'European consolidation'))
+                ),
+                // Key Risk Findings
+                h('div', { className: 'risk-findings' },
+                    h('h3', null, 'Key Risk Findings'),
+                    h(RiskFinding, null, usaPctEU + '% of all acquired EU photonics/tech companies go to US acquirers — the largest single destination.'),
+                    h(RiskFinding, null, 'US buyers pay a median of ', h(HL, null, '$' + data.euSizeByAcquirer.USA.median + 'M'), ' for EU targets vs ', h(HL, null, '$' + data.euSizeByAcquirer.Europe.median + 'M'), ' in intra-EU deals — a ', medianRatio + '× premium, indicating deliberate targeting of high-value IP.'),
+                    h(RiskFinding, null, 'Total US spend acquiring EU companies: ', h(HL, null, '$' + (data.totalUSABuyEUValue / 1000).toFixed(1) + 'B'), ' vs EU spend acquiring US companies: ', h(HL, null, '$' + (data.totalEUBuyUSAValue / 1000).toFixed(1) + 'B'), ' — a ', capitalImbalance + '× imbalance in capital flows.'),
+                    (data.blockedDeals || []).length > 0 ? h(RiskFinding, null, (data.blockedDeals || []).map(d => d.acq + '/' + d.tgt).join(', '), ' (', h(HLR, null, '$' + (totalBlockedValue / 1000).toFixed(0) + 'B'), ') blocked by regulators — excluded from all aggregates. See IP Risk tab for details.') : null,
+                    h(RiskFinding, null, 'Asian buyers (China, Singapore, Taiwan, Japan) account for ', data.totalAsiaBuyEU, ' EU acquisitions — a growing secondary concern for strategic autonomy.'),
+                    h(RiskFinding, null, '2024–2025 acceleration: US buyers did ', recent, ' EU acquisitions in just 2 years — the fastest pace in the dataset.')
+                ),
+                // Notable deal cards
+                h('div', { className: 'deal-cards-grid' },
+                    h('div', { className: 'card' },
+                        h('div', { className: 'deal-card-header' }, 'Notable US Acquisitions of Critical EU Photonics/Semiconductor Assets'),
+                        h('div', { className: 'deal-card-subtitle' }, 'Selected strategic deals'),
+                        ...notableUSBuys.map((d, i) =>
+                            h('div', { className: 'deal-entry', key: i },
+                                h('div', { className: 'deal-entry-left' },
+                                    h('div', { className: 'deal-entry-name' }, d.name, h('span', { className: 'country' }, '(' + d.country + ')'), d.blocked ? h('span', { className: 'badge-blocked' }, 'BLOCKED') : null),
+                                    h('div', { className: 'deal-entry-meta' }, '→ ' + d.acq + ' · ' + d.yr + ' · ' + d.sector + (d.note ? ' — ' + d.note : ''))
+                                ),
+                                h('div', { className: 'deal-entry-value usa-color' }, '$' + (d.v / 1000).toFixed(1) + 'B')
+                            )
+                        )
+                    ),
+                    h('div', { className: 'card' },
+                        h('div', { className: 'deal-card-header' }, 'European Countermoves: EU Acquiring US Companies'),
+                        h('div', { className: 'deal-card-subtitle' }, 'Europe does buy in the US — but at lower aggregate values'),
+                        ...notableEUBuys.map((d, i) =>
+                            h('div', { className: 'deal-entry', key: i },
+                                h('div', { className: 'deal-entry-left' },
+                                    h('div', { className: 'deal-entry-name' }, d.name, h('span', { className: 'country' }, '(' + d.country + ')')),
+                                    h('div', { className: 'deal-entry-meta' }, '→ ' + d.tgt + ' · ' + d.yr)
+                                ),
+                                h('div', { className: 'deal-entry-value eu-color' }, '$' + (d.v / 1000).toFixed(1) + 'B')
+                            )
+                        )
+                    )
+                ),
+                // Transaction trend chart
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'USA → EU Transaction Trend'),
+                    h(ResponsiveContainer, { width: '100%', height: 320 },
+                        h(LineChart, { data: data.usaBuyEUPerYear },
+                            h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'yr', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS), h(Tooltip, DARK_TOOLTIP), h(Legend, null),
+                            h(Line, { type: 'monotone', dataKey: 'n', stroke: CHART_COLORS.usa, name: 'Deal Count', strokeWidth: 2, dot: { fill: CHART_COLORS.usa, r: 3 } })
+                        )
+                    )
+                ),
+                // Deal tables
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'USA → EU Deals'),
+                    h('div', { className: 'table-container' },
+                        h('table', null,
+                            h('thead', null, h('tr', null, h('th', null, 'Acquirer'), h('th', null, 'Target'), h('th', null, 'Country'), h('th', null, 'Year'), h('th', null, 'Value ($M)'), h('th', { style: { width: '52px', textAlign: 'center' } }, ''))),
+                            h('tbody', null,
+                                data.usaBuyEU.map((deal, idx) =>
+                                    h('tr', { key: idx }, h('td', null, deal.acq), h('td', null, deal.tgt), h('td', null, deal.tgtC), h('td', null, deal.yr), h('td', null, deal.v ? '$' + deal.v.toLocaleString() : 'Undisclosed'), h('td', { style: { textAlign: 'center' } }, deal.url ? h('a', { href: deal.url, target: '_blank', rel: 'noopener noreferrer', style: { color: '#FFBD48', textDecoration: 'none', fontSize: '12px' }, title: 'View deal details' }, 'Details \u2197') : null))
+                                )
+                            )
+                        )
+                    )
+                ),
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'EU → USA Deals'),
+                    h('div', { className: 'table-container' },
+                        h('table', null,
+                            h('thead', null, h('tr', null, h('th', null, 'Acquirer'), h('th', null, 'Country'), h('th', null, 'Target'), h('th', null, 'Year'), h('th', null, 'Value ($M)'), h('th', { style: { width: '52px', textAlign: 'center' } }, ''))),
+                            h('tbody', null,
+                                data.euBuyUSA.map((deal, idx) =>
+                                    h('tr', { key: idx }, h('td', null, deal.acq), h('td', null, deal.acqC), h('td', null, deal.tgt), h('td', null, deal.yr), h('td', null, deal.v ? '$' + deal.v.toLocaleString() : 'Undisclosed'), h('td', { style: { textAlign: 'center' } }, deal.url ? h('a', { href: deal.url, target: '_blank', rel: 'noopener noreferrer', style: { color: '#FFBD48', textDecoration: 'none', fontSize: '12px' }, title: 'View deal details' }, 'Details \u2197') : null))
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        };
+
+        // ── Timeline Tab ──
+        const TimelineTab = ({ data }) =>
+            h('div', { className: 'tab-content active' },
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Deal Count by Year (Stacked)'),
+                    h(ResponsiveContainer, { width: '100%', height: 320 },
+                        h(BarChart, { data: data.yearDataWithTotals },
+                            h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'year', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS), h(Tooltip, DARK_TOOLTIP), h(Legend, null),
+                            h(Bar, { dataKey: 'USA', stackId: 'a', fill: CHART_COLORS.usa }), h(Bar, { dataKey: 'Europe', stackId: 'a', fill: CHART_COLORS.europe }),
+                            h(Bar, { dataKey: 'Asia', stackId: 'a', fill: CHART_COLORS.asia }), h(Bar, { dataKey: 'Other', stackId: 'a', fill: CHART_COLORS.other })
+                        )
+                    )
+                ),
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Deal Count by Year & Region'),
+                    h('div', { className: 'table-container' },
+                        h('table', null,
+                            h('thead', null, h('tr', null, h('th', null, 'Year'), h('th', null, 'USA'), h('th', null, 'Europe'), h('th', null, 'Asia'), h('th', null, 'Other'), h('th', null, 'Total'))),
+                            h('tbody', null,
+                                data.yearDataWithTotals.map((row, idx) =>
+                                    h('tr', { key: idx }, h('td', null, row.year), h('td', null, row.USA), h('td', null, row.Europe), h('td', null, row.Asia), h('td', null, row.Other), h('td', null, h('strong', null, row.total)))
+                                )
+                            )
+                        )
+                    )
+                ),
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Deal Value by Year & Region ($M)'),
+                    h('div', { className: 'table-container' },
+                        h('table', null,
+                            h('thead', null, h('tr', null, h('th', null, 'Year'), h('th', null, 'USA'), h('th', null, 'Europe'), h('th', null, 'Asia'), h('th', null, 'Total'))),
+                            h('tbody', null,
+                                data.yearValueDataWithTotals.map((row, idx) =>
+                                    h('tr', { key: idx }, h('td', null, row.year), h('td', null, '$' + row.USA.toLocaleString()), h('td', null, '$' + row.Europe.toLocaleString()), h('td', null, '$' + row.Asia.toLocaleString()), h('td', null, h('strong', null, '$' + row.total.toLocaleString())))
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+
+        // ── IP Risk Tab ──
+        const IPRiskTab = ({ data }) => {
+            const blocked = data.blockedDeals || [];
+            const totalBlockedVal = blocked.reduce((s, d) => s + (d.v || 0), 0);
+
+            return h('div', { className: 'tab-content active' },
+                // Blocked Deals section
+                blocked.length > 0 ? h('div', { className: 'card', style: { borderLeft: '4px solid #EF4444' } },
+                    h('div', { className: 'card-header', style: { display: 'flex', alignItems: 'center', gap: '12px' } },
+                        h('span', null, 'Blocked & Rejected Deals'),
+                        h('span', { className: 'badge-blocked', style: { fontSize: '11px', padding: '3px 10px' } }, blocked.length + ' DEAL' + (blocked.length > 1 ? 'S' : ''))
+                    ),
+                    h('p', { className: 'text-small', style: { marginBottom: '16px', color: '#9CA3AF' } },
+                        'These deals were blocked by regulators and are excluded from all dashboard aggregates. Combined value: $' + (totalBlockedVal / 1000).toFixed(0) + 'B.'),
+                    h('table', null,
+                        h('thead', null,
+                            h('tr', null,
+                                h('th', null, 'Year'),
+                                h('th', null, 'Acquirer'),
+                                h('th', null, 'Target'),
+                                h('th', null, 'Sector'),
+                                h('th', null, 'Value ($M)'),
+                                h('th', null, 'Status'),
+                                h('th', null, 'Regulators')
+                            )
+                        ),
+                        h('tbody', null,
+                            ...blocked.map((d, i) =>
+                                h('tr', { key: i },
+                                    h('td', null, d.yr),
+                                    h('td', null, h('strong', null, d.acq), ' ', h(RegionBadge, { region: d.acqR })),
+                                    h('td', null, d.tgt, ' (', d.tgtC, ')'),
+                                    h('td', null, d.sector || '—'),
+                                    h('td', null, d.v ? '$' + d.v.toLocaleString() : '—'),
+                                    h('td', null, h('span', { className: 'badge-blocked', style: { fontSize: '11px', padding: '3px 10px' } }, 'BLOCKED')),
+                                    h('td', { style: { fontSize: '12px', color: '#9CA3AF' } }, (d.regulators || []).join(', ') || '—')
+                                )
+                            )
+                        )
+                    ),
+                    // Reason details
+                    ...blocked.map((d, i) =>
+                        h('div', { key: 'reason-' + i, style: { marginTop: '16px', padding: '12px 16px', background: 'rgba(239,68,68,0.06)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)' } },
+                            h('p', { style: { fontSize: '13px', color: '#D1D5DB', lineHeight: '1.6' } },
+                                h('strong', { style: { color: '#EF4444' } }, d.acq + ' / ' + d.tgt + ' ($' + (d.v / 1000).toFixed(0) + 'B): '),
+                                d.reason || 'Blocked by regulators.'
+                            )
+                        )
+                    )
+                ) : null,
+                // Existing IP content
+                h('div', { className: 'card' },
+                    h('div', { className: 'card-header' }, 'Intellectual Property & Risk Assessment'),
+                    h('div', { className: 'text-large' },
+                        h('p', null, h('strong', { style: { color: '#F9FAFB' } }, 'Strategic IP Considerations in Photonics M&A')),
+                        h('p', { style: { marginTop: '8px' } }, 'The photonics sector is characterized by significant IP complexity due to patents spanning optical systems, semiconductors, and software. Key risk factors include:')
+                    ),
+                    h('div', { style: { marginTop: '20px' } },
+                        h('h3', { style: { fontSize: '16px', color: '#FFBD48', marginBottom: '12px' } }, 'Patent Portfolio Assessment'),
+                        h('p', { className: 'text-small', style: { marginBottom: '12px' } }, 'Cross-border acquisitions often trigger IP audits to identify complementary or redundant patent families. US acquirers of European targets must navigate European Patent Office filings, while reverse acquisitions face USPTO complexity.'),
+                        h('h3', { style: { fontSize: '16px', color: '#FFBD48', marginBottom: '12px', marginTop: '20px' } }, 'Regulatory & Licensing Risks'),
+                        h('p', { className: 'text-small', style: { marginBottom: '12px' } }, 'Trade secret protection varies significantly across jurisdictions. EU GDPR compliance and US export control laws (EAR/ITAR) create additional integration challenges. Technology transfer restrictions on China-facing exports are material to deal valuations.'),
+                        h('h3', { style: { fontSize: '16px', color: '#FFBD48', marginBottom: '12px', marginTop: '20px' } }, 'Technology Valuation Metrics'),
+                        h('p', { className: 'text-small', style: { marginBottom: '12px' } }, 'Disclosed photonics deals typically command 3-8x revenue multiples based on IP defensibility. The largest deals (>$10B) usually target companies with patent moats in integrated photonics, quantum sensors, or specialty semiconductors.'),
+                        h('h3', { style: { fontSize: '16px', color: '#FFBD48', marginBottom: '12px', marginTop: '20px' } }, 'Cross-Border Integration Risks'),
+                        h('p', { className: 'text-small' }, 'USA→EU transactions benefit from stronger EU IP enforcement but face longer patent prosecution timelines. EU→USA deals gain access to US markets but must address stringent US patent standards. Both directions benefit from trade secret consolidation under unified policies.')
+                    )
+                )
+            );
+        };
+
+
+        // ── Latest Deals Tab ──
+        const LatestDealsTab = ({ data }) => {
+            // Compute cutoff: 6 months before lastUpdated
+            const lastUpdated = data.lastUpdated || new Date().toISOString().slice(0, 10);
+            const cutoff = new Date(lastUpdated);
+            cutoff.setMonth(cutoff.getMonth() - 6);
+            const cutoffYear = cutoff.getFullYear();
+            const cutoffMonth = cutoff.getMonth(); // 0-indexed
+            const MONTH_MAP = { January:0,February:1,March:2,April:3,May:4,June:5,July:6,August:7,September:8,October:9,November:10,December:11,
+                Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11 };
+
+            // Combine all three deal arrays into one pool
+            const allPool = [];
+            (data.usaBuyEU || []).forEach(d => allPool.push({ ...d, flow: 'USA → EU' }));
+            (data.euBuyUSA || []).forEach(d => allPool.push({ ...d, flow: 'EU → USA' }));
+            // For allDeals (if available from scraper) use it instead for full coverage
+            if (data.allDeals && data.allDeals.length > 0) {
+                allPool.length = 0; // clear and use allDeals instead
+                data.allDeals.forEach(d => {
+                    const flow = d.aR === 'USA' && d.tR === 'Europe' ? 'USA → EU' :
+                                 d.aR === 'Europe' && d.tR === 'USA' ? 'EU → USA' :
+                                 d.aR + ' → ' + d.tR;
+                    allPool.push({ acq: d.acq, tgt: d.tgt, yr: d.yr, mo: d.mo, v: d.v, url: d.url, flow, tgtC: d.tgtC || '', acqC: d.acqC || '', aR: d.aR, tR: d.tR, type: d.type || '' });
+                });
+            }
+
+            // Filter to last 6 months
+            const recent = allPool.filter(d => {
+                if (!d.yr) return false;
+                if (d.yr > cutoffYear) return true;
+                if (d.yr === cutoffYear) {
+                    const mi = MONTH_MAP[d.mo];
+                    if (mi === undefined) return true; // unknown month in cutoff year → include
+                    return mi >= cutoffMonth;
+                }
+                return false;
+            });
+
+            // Sort by year desc, value desc
+            recent.sort((a, b) => (b.yr - a.yr) || ((b.v || 0) - (a.v || 0)));
+
+            // Freshness: deals in last 2 months get green dot, rest get yellow
+            const freshCutoff = new Date(lastUpdated);
+            freshCutoff.setMonth(freshCutoff.getMonth() - 2);
+            const freshYear = freshCutoff.getFullYear();
+            const freshMonth = freshCutoff.getMonth();
+
+            const isFresh = (d) => {
+                if (d.yr > freshYear) return true;
+                if (d.yr === freshYear) {
+                    const mi = MONTH_MAP[d.mo];
+                    return mi === undefined || mi >= freshMonth;
+                }
+                return false;
+            };
+
+            const totalVal = recent.reduce((s, d) => s + (d.v || 0), 0);
+
+            return h('div', { className: 'tab-content active' },
+                // Info banner
+                h('div', { style: { background: 'rgba(255,189,72,0.08)', border: '1px solid rgba(255,189,72,0.25)', borderRadius: '12px', padding: '20px 24px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' } },
+                    h('div', null,
+                        h('div', { style: { fontSize: '18px', fontWeight: 700, color: '#F9FAFB', marginBottom: '4px' } }, 'Deals from the Last 6 Months'),
+                        h('div', { style: { fontSize: '13px', color: '#9CA3AF' } },
+                            'Showing deals since ' + cutoff.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) + ' · Data last scraped: ' + lastUpdated
+                        )
+                    ),
+                    h('div', { style: { display: 'flex', gap: '32px' } },
+                        h('div', { style: { textAlign: 'right' } },
+                            h('div', { style: { fontSize: '28px', fontWeight: 700, color: '#FFBD48' } }, recent.length),
+                            h('div', { style: { fontSize: '11px', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.3px' } }, 'Recent Deals')
+                        ),
+                        h('div', { style: { textAlign: 'right' } },
+                            h('div', { style: { fontSize: '28px', fontWeight: 700, color: '#51A094' } }, totalVal ? '$' + (totalVal >= 1000 ? (totalVal/1000).toFixed(1) + 'B' : totalVal + 'M') : '—'),
+                            h('div', { style: { fontSize: '11px', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.3px' } }, 'Disclosed Value')
+                        )
+                    )
+                ),
+
+                // Legend
+                h('div', { style: { display: 'flex', gap: '24px', marginBottom: '16px', fontSize: '12px', color: '#9CA3AF' } },
+                    h('span', null, h('span', { className: 'deal-fresh' }), 'Last 2 months'),
+                    h('span', null, h('span', { className: 'deal-recent' }), '3–6 months ago')
+                ),
+
+                // Table
+                h('div', { className: 'card' },
+                    h('div', { className: 'table-container' },
+                        h('table', null,
+                            h('thead', null,
+                                h('tr', null,
+                                    h('th', { style: { width: '28px' } }, ''),
+                                    h('th', null, 'Date'),
+                                    h('th', null, 'Acquirer'),
+                                    h('th', null, 'Target'),
+                                    h('th', null, 'Flow'),
+                                    h('th', { style: { textAlign: 'right' } }, 'Value ($M)'),
+                                    h('th', { style: { width: '52px', textAlign: 'center' } }, '')
+                                )
+                            ),
+                            h('tbody', null,
+                                recent.length === 0
+                                    ? h('tr', null, h('td', { colSpan: 7, style: { textAlign: 'center', color: '#6B7280', padding: '40px' } }, 'No deals found in the last 6 months'))
+                                    : recent.map((d, i) =>
+                                        h('tr', { key: i },
+                                            h('td', null, h('span', { className: isFresh(d) ? 'deal-fresh' : 'deal-recent' })),
+                                            h('td', null, (d.mo ? d.mo + ' ' : '') + d.yr),
+                                            h('td', { style: { fontWeight: 600 } }, d.acq),
+                                            h('td', null, d.tgt, d.tgtC ? h('span', { style: { color: '#6B7280', marginLeft: '6px', fontSize: '12px' } }, '(' + d.tgtC + ')') : null),
+                                            h('td', null, d.flow),
+                                            h('td', { style: { textAlign: 'right', fontWeight: 600 } }, d.v ? '$' + d.v.toLocaleString() : '—'),
+                                            h('td', { style: { textAlign: 'center' } },
+                                                d.url ? h('a', { href: d.url, target: '_blank', rel: 'noopener noreferrer', style: { color: '#FFBD48', textDecoration: 'none', fontSize: '12px' }, title: 'View deal details' }, 'Details ↗') : null
+                                            )
+                                        )
+                                    )
+                            )
+                        )
+                    )
+                )
+            );
+        };
+
+        // ── All Data Tab ──
+        const AllDataTab = ({ data }) => {
+            const [search, setSearch] = useState('');
+            const [sortCol, setSortCol] = useState('yr');
+            const [sortDir, setSortDir] = useState('desc');
+            const [page, setPage] = useState(0);
+            const PAGE_SIZE = 50;
+
+            // Build master list from allDeals or fall back to combined arrays
+            const allRows = React.useMemo(() => {
+                if (data.allDeals && data.allDeals.length > 0) return data.allDeals;
+                // Fallback: combine available arrays
+                const pool = [];
+                (data.topDeals || []).forEach(d => pool.push({ yr: d.yr, mo: '', type: '', acq: d.acq, acqC: '', aR: d.aR, tgt: d.tgt, tgtC: '', tR: d.tR, v: d.v, url: d.url }));
+                (data.usaBuyEU || []).forEach(d => pool.push({ yr: d.yr, mo: '', type: '', acq: d.acq, acqC: '', aR: 'USA', tgt: d.tgt, tgtC: d.tgtC, tR: 'Europe', v: d.v, url: d.url }));
+                (data.euBuyUSA || []).forEach(d => pool.push({ yr: d.yr, mo: '', type: '', acq: d.acq, acqC: d.acqC, aR: 'Europe', tgt: d.tgt, tgtC: '', tR: 'USA', v: d.v, url: d.url }));
+                // Deduplicate by acq+tgt+yr
+                const seen = new Set();
+                return pool.filter(d => {
+                    const k = d.acq + '|' + d.tgt + '|' + d.yr;
+                    if (seen.has(k)) return false;
+                    seen.add(k);
+                    return true;
+                });
+            }, [data]);
+
+            // Filter
+            const filtered = React.useMemo(() => {
+                if (!search.trim()) return allRows;
+                const q = search.toLowerCase();
+                return allRows.filter(d =>
+                    (d.acq || '').toLowerCase().includes(q) ||
+                    (d.tgt || '').toLowerCase().includes(q) ||
+                    (d.acqC || '').toLowerCase().includes(q) ||
+                    (d.tgtC || '').toLowerCase().includes(q) ||
+                    (d.aR || '').toLowerCase().includes(q) ||
+                    (d.tR || '').toLowerCase().includes(q) ||
+                    (d.type || '').toLowerCase().includes(q) ||
+                    String(d.yr).includes(q)
+                );
+            }, [allRows, search]);
+
+            // Sort
+            const sorted = React.useMemo(() => {
+                const arr = [...filtered];
+                const dir = sortDir === 'asc' ? 1 : -1;
+                arr.sort((a, b) => {
+                    let av = a[sortCol], bv = b[sortCol];
+                    if (sortCol === 'v') { av = av || 0; bv = bv || 0; return (av - bv) * dir; }
+                    if (sortCol === 'yr') { return ((av || 0) - (bv || 0)) * dir; }
+                    av = (av || '').toLowerCase(); bv = (bv || '').toLowerCase();
+                    return av < bv ? -dir : av > bv ? dir : 0;
+                });
+                return arr;
+            }, [filtered, sortCol, sortDir]);
+
+            // Pagination
+            const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+            const paged = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+            // Reset page on search/sort change
+            React.useEffect(() => { setPage(0); }, [search, sortCol, sortDir]);
+
+            const handleSort = (col) => {
+                if (sortCol === col) setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+                else { setSortCol(col); setSortDir(col === 'yr' || col === 'v' ? 'desc' : 'asc'); }
+            };
+
+            const SortTh = ({ col, label, style }) =>
+                h('th', {
+                    className: 'sortable' + (sortCol === col ? ' ' + sortDir : ''),
+                    onClick: () => handleSort(col),
+                    style: { ...style, cursor: 'pointer' }
+                }, label);
+
+            // Page buttons
+            const pageButtons = () => {
+                const btns = [];
+                btns.push(h('button', { className: 'page-btn', key: 'prev', disabled: page === 0, onClick: () => setPage(p => p - 1) }, '←'));
+                const start = Math.max(0, page - 3);
+                const end = Math.min(totalPages, start + 7);
+                for (let i = start; i < end; i++) {
+                    btns.push(h('button', { className: 'page-btn' + (i === page ? ' active' : ''), key: i, onClick: () => setPage(i) }, i + 1));
+                }
+                btns.push(h('button', { className: 'page-btn', key: 'next', disabled: page >= totalPages - 1, onClick: () => setPage(p => p + 1) }, '→'));
+                return btns;
+            };
+
+            return h('div', { className: 'tab-content active' },
+                // Header bar
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '16px' } },
+                    h('div', null,
+                        h('div', { style: { fontSize: '18px', fontWeight: 700, color: '#F9FAFB' } }, 'Complete M&A Database'),
+                        h('div', { style: { fontSize: '13px', color: '#9CA3AF', marginTop: '4px' } },
+                            sorted.length.toLocaleString() + ' deals' + (search ? ' matching "' + search + '"' : '') + ' · Source: EPIC Photonics Index · Last updated: ' + (data.lastUpdated || '—')
+                        )
+                    ),
+                    h('input', {
+                        className: 'search-box',
+                        type: 'text',
+                        placeholder: 'Search deals by company, country, region, type…',
+                        value: search,
+                        onChange: (e) => setSearch(e.target.value)
+                    })
+                ),
+
+                // Table
+                h('div', { className: 'card' },
+                    h('div', { className: 'table-container' },
+                        h('table', null,
+                            h('thead', null,
+                                h('tr', null,
+                                    h(SortTh, { col: 'yr', label: 'Year' }),
+                                    h(SortTh, { col: 'acq', label: 'Acquirer' }),
+                                    h(SortTh, { col: 'aR', label: 'Region', style: { width: '90px' } }),
+                                    h(SortTh, { col: 'tgt', label: 'Target' }),
+                                    h(SortTh, { col: 'tR', label: 'Region', style: { width: '90px' } }),
+                                    h(SortTh, { col: 'v', label: 'Value ($M)', style: { textAlign: 'right' } }),
+                                    h('th', { style: { width: '52px', textAlign: 'center' } }, '')
+                                )
+                            ),
+                            h('tbody', null,
+                                paged.length === 0
+                                    ? h('tr', null, h('td', { colSpan: 7, style: { textAlign: 'center', color: '#6B7280', padding: '40px' } }, search ? 'No deals match your search' : 'No deal data available'))
+                                    : paged.map((d, i) =>
+                                        h('tr', { key: page * PAGE_SIZE + i },
+                                            h('td', null, d.yr),
+                                            h('td', { style: { fontWeight: 600 } }, d.acq),
+                                            h('td', null, h(RegionBadge, { region: d.aR || 'Other' })),
+                                            h('td', null, d.tgt, d.tgtC ? h('span', { style: { color: '#6B7280', marginLeft: '6px', fontSize: '12px' } }, '(' + d.tgtC + ')') : null),
+                                            h('td', null, h(RegionBadge, { region: d.tR || 'Other' })),
+                                            h('td', { style: { textAlign: 'right', fontWeight: 600 } }, d.v ? '$' + d.v.toLocaleString() : '—'),
+                                            h('td', { style: { textAlign: 'center' } },
+                                                d.url ? h('a', { href: d.url, target: '_blank', rel: 'noopener noreferrer', style: { color: '#FFBD48', textDecoration: 'none', fontSize: '12px' }, title: 'View deal details' }, 'Details ↗') : null
+                                            )
+                                        )
+                                    )
+                            )
+                        )
+                    ),
+                    // Pagination
+                    totalPages > 1 ? h('div', { className: 'pagination' },
+                        ...pageButtons(),
+                        h('span', { className: 'page-info' }, 'Page ' + (page + 1) + ' of ' + totalPages)
+                    ) : null
+                )
+            );
+        };
+
+        // ── Footer ──
+        const FooterSection = ({ data }) =>
+            h('footer', { className: 'footer' },
+                h('div', { className: 'footer-content' },
+                    h(BerryIconSmall),
+                    h('span', null, 'Powered by Cloudberry VC · Data from '),
+                    h(EpicLink),
+                    h('span', null, ' Photonics Index · Last updated: ' + data.lastUpdated)
+                ),
+                h('div', { style: { marginTop: '8px', fontSize: '11px', color: '#6B7280' } },
+                    h('a', { href: 'https://photonics-index.org/ma/', target: '_blank', style: { fontSize: '11px' } }, 'EPIC Photonics Index — photonics-index.org/ma')
+                )
+            );
+
+        // Render
+        const root = createRoot(document.getElementById('root'));
+        root.render(h(App));
+    </script>
+</body>
+</html>
