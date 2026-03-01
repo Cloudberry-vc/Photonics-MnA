@@ -226,6 +226,7 @@
         .deal-entry-value.usa-color { color: #FFBD48; }
         .deal-entry-value.eu-color { color: #51A094; }
         .badge-blocked { display: inline-block; padding: 2px 8px; background-color: rgba(239,68,68,0.2); color: #EF4444; font-size: 10px; font-weight: 700; border-radius: 4px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-ignored { display: inline-block; padding: 2px 8px; background-color: rgba(255,189,72,0.2); color: #FFBD48; font-size: 10px; font-weight: 700; border-radius: 4px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* Recharts dark overrides */
         .recharts-default-tooltip { background-color: #1F2937 !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 8px !important; color: #E5E7EB !important; }
@@ -818,11 +819,11 @@
                 // Blocked Deals section
                 blocked.length > 0 ? h('div', { className: 'card', style: { borderLeft: '4px solid #EF4444' } },
                     h('div', { className: 'card-header', style: { display: 'flex', alignItems: 'center', gap: '12px' } },
-                        h('span', null, 'Blocked & Rejected Deals'),
+                        h('span', null, 'Excluded Deals'),
                         h('span', { className: 'badge-blocked', style: { fontSize: '11px', padding: '3px 10px' } }, blocked.length + ' DEAL' + (blocked.length > 1 ? 'S' : ''))
                     ),
                     h('p', { className: 'text-small', style: { marginBottom: '16px', color: '#9CA3AF' } },
-                        'These deals were blocked by regulators and are excluded from all dashboard aggregates. Combined value: $' + (totalBlockedVal / 1000).toFixed(0) + 'B.'),
+                        'These deals are excluded from all dashboard aggregates. Combined value: $' + (totalBlockedVal / 1000).toFixed(0) + 'B.'),
                     h('table', null,
                         h('thead', null,
                             h('tr', null,
@@ -843,21 +844,24 @@
                                     h('td', null, d.tgt, ' (', d.tgtC, ')'),
                                     h('td', null, d.sector || '—'),
                                     h('td', null, d.v ? '$' + d.v.toLocaleString() : '—'),
-                                    h('td', null, h('span', { className: 'badge-blocked', style: { fontSize: '11px', padding: '3px 10px' } }, 'BLOCKED')),
+                                    h('td', null, h('span', { className: (d.status || 'BLOCKED') === 'IGNORED' ? 'badge-ignored' : 'badge-blocked', style: { fontSize: '11px', padding: '3px 10px' } }, d.status || 'BLOCKED')),
                                     h('td', { style: { fontSize: '12px', color: '#9CA3AF' } }, (d.regulators || []).join(', ') || '—')
                                 )
                             )
                         )
                     ),
                     // Reason details
-                    ...blocked.map((d, i) =>
-                        h('div', { key: 'reason-' + i, style: { marginTop: '16px', padding: '12px 16px', background: 'rgba(239,68,68,0.06)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)' } },
+                    ...blocked.map((d, i) => {
+                        const isIgnored = (d.status || 'BLOCKED') === 'IGNORED';
+                        const accent = isIgnored ? 'rgba(255,189,72,' : 'rgba(239,68,68,';
+                        const accentSolid = isIgnored ? '#FFBD48' : '#EF4444';
+                        return h('div', { key: 'reason-' + i, style: { marginTop: '16px', padding: '12px 16px', background: accent + '0.06)', borderRadius: '8px', border: '1px solid ' + accent + '0.2)' } },
                             h('p', { style: { fontSize: '13px', color: '#D1D5DB', lineHeight: '1.6' } },
-                                h('strong', { style: { color: '#EF4444' } }, d.acq + ' / ' + d.tgt + ' ($' + (d.v / 1000).toFixed(0) + 'B): '),
-                                d.reason || 'Blocked by regulators.'
+                                h('strong', { style: { color: accentSolid } }, d.acq + ' / ' + d.tgt + ' ($' + (d.v / 1000).toFixed(0) + 'B): '),
+                                d.reason || 'Excluded from aggregates.'
                             )
-                        )
-                    )
+                        );
+                    })
                 ) : null,
                 // Existing IP content
                 h('div', { className: 'card' },
