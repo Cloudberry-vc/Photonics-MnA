@@ -1,22 +1,22 @@
 {
   "lastUpdated": "2026-03-01",
-  "total": 1991,
+  "total": 1990,
   "euTargetsTotal": 734,
   "totalUSABuyEU": 265,
   "totalEUBuyUSA": 137,
   "totalEUBuyEU": 393,
   "totalAsiaBuyEU": 51,
-  "totalDisclosedValue": 1993972,
+  "totalDisclosedValue": 743972,
   "totalUSABuyEUValue": 60152,
   "totalEUBuyUSAValue": 44781,
   "targetsByRegion": {
-    "USA": 1007,
+    "USA": 1006,
     "Europe": 734,
     "Asia": 85,
     "Other": 165
   },
   "acquirersByRegion": {
-    "USA": 1182,
+    "USA": 1181,
     "Europe": 588,
     "Asia": 140,
     "Other": 81
@@ -162,7 +162,7 @@
     },
     {
       "year": 2026,
-      "USA": 27,
+      "USA": 26,
       "Europe": 13,
       "Asia": 1,
       "Other": 1
@@ -267,7 +267,7 @@
     },
     {
       "year": 2026,
-      "USA": 1264574,
+      "USA": 14574,
       "Europe": 735,
       "Asia": 1500
     }
@@ -638,15 +638,6 @@
   ],
   "topDeals": [
     {
-      "yr": 2026,
-      "acq": "SpaceX",
-      "aR": "USA",
-      "tgt": "xAI",
-      "tR": "USA",
-      "v": 1250000,
-      "url": "https://www.spacex.com/updates#xai-joins-spacex"
-    },
-    {
       "yr": 2023,
       "acq": "Microsoft",
       "aR": "USA",
@@ -744,9 +735,30 @@
       "tR": "USA",
       "v": 13000,
       "url": "https://techcrunch.com/2020/04/06/koch-industries-closes-nearly-13b-infor-acquisition/"
+    },
+    {
+      "yr": 2024,
+      "acq": "Siemens",
+      "aR": "Europe",
+      "tgt": "Altair",
+      "tR": "USA",
+      "v": 10600,
+      "url": "https://investor.altair.com/news-releases/news-release-details/altair-signs-definitive-agreement-siemens-be-acquired-106"
     }
   ],
   "blockedDeals": [
+    {
+      "acq": "SpaceX",
+      "acqR": "USA",
+      "tgt": "xAI",
+      "tgtC": "United States",
+      "tgtR": "USA",
+      "yr": 2026,
+      "v": 1250000,
+      "sector": "AI",
+      "reason": "Excluded: not a photonics deal. SpaceX/xAI merger skews photonics M&A aggregate data.",
+      "regulators": []
+    },
     {
       "acq": "NVIDIA",
       "acqR": "USA",
@@ -835,19 +847,6 @@
     }
   ],
   "allDeals": [
-    {
-      "yr": 2026,
-      "mo": "February",
-      "type": "Acquisition",
-      "acq": "SpaceX",
-      "acqC": "USA",
-      "aR": "USA",
-      "tgt": "xAI",
-      "tgtC": "USA",
-      "tR": "USA",
-      "v": 1250000,
-      "url": "https://www.spacex.com/updates#xai-joins-spacex"
-    },
     {
       "yr": 2026,
       "mo": "February",
