@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photonics M&A Intelligence Dashboard — beta v0.1</title>
+    <title>Photonics M&A Dashboard — beta v0.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script type="importmap">
     {
@@ -538,16 +538,16 @@
                     h('div', { className: 'header-left' },
                         h(BerryIcon),
                         h('div', { className: 'header-text' },
-                            h('h1', null, 'Photonics M&A Intelligence Dashboard ', h('span', { style: { fontSize: '14px', fontWeight: 500, color: '#9CA3AF', verticalAlign: 'super' } }, 'beta v0.1')),
-                            h('p', null, h(EpicLink), ' Photonics Index')
+                            h('h1', null, 'Photonics M&A Dashboard ', h('span', { style: { fontSize: '14px', fontWeight: 500, color: '#9CA3AF', verticalAlign: 'super' } }, 'beta v0.1')),
+                            h('p', null, h(EpicLink), ' Photonics Index', h('span', { style: { color: '#9CA3AF', fontSize: '11px', marginLeft: '8px' } }, '(dataset includes semiconductor & adjacent deals)'))
                         )
                     ),
                     h('div', { className: 'header-stats' },
                         h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.total.toLocaleString()), h('div', { className: 'stat-label' }, 'Total Deals')),
                         h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, '$' + (data.totalDisclosedValue / 1000).toFixed(1) + 'B'), h('div', { className: 'stat-label' }, 'Disclosed Value')),
-                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.euTargetsTotal.toLocaleString()), h('div', { className: 'stat-label' }, 'EU Targets')),
-                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.totalUSABuyEU), h('div', { className: 'stat-label' }, 'USA→EU')),
-                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.totalAsiaBuyEU), h('div', { className: 'stat-label' }, 'Asia→EU'))
+                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.euTargetsTotal.toLocaleString()), h('div', { className: 'stat-label' }, 'Europe Targets')),
+                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.totalUSABuyEU), h('div', { className: 'stat-label' }, 'USA→Europe')),
+                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.totalAsiaBuyEU), h('div', { className: 'stat-label' }, 'Asia→Europe'))
                     )
                 )
             );
@@ -556,8 +556,8 @@
         const TabBar = ({ activeTab, setActiveTab }) =>
             h('div', { className: 'tab-bar' },
                 h('button', { className: 'tab' + (activeTab === 'overview' ? ' active' : ''), onClick: () => setActiveTab('overview') }, 'Overview'),
-                h('button', { className: 'tab' + (activeTab === 'eutargets' ? ' active' : ''), onClick: () => setActiveTab('eutargets') }, 'EU Targets'),
-                h('button', { className: 'tab' + (activeTab === 'flow' ? ' active' : ''), onClick: () => setActiveTab('flow') }, 'USA ⇄ EU Flow'),
+                h('button', { className: 'tab' + (activeTab === 'eutargets' ? ' active' : ''), onClick: () => setActiveTab('eutargets') }, 'Europe Targets'),
+                h('button', { className: 'tab' + (activeTab === 'flow' ? ' active' : ''), onClick: () => setActiveTab('flow') }, 'USA ⇄ Europe Flow'),
                 h('button', { className: 'tab' + (activeTab === 'timeline' ? ' active' : ''), onClick: () => setActiveTab('timeline') }, 'Timeline'),
                 h('button', { className: 'tab' + (activeTab === 'iprisk' ? ' active' : ''), onClick: () => setActiveTab('iprisk') }, 'IP Risk'),
                 h('button', { className: 'tab' + (activeTab === 'latest' ? ' active' : ''), onClick: () => setActiveTab('latest') }, 'Latest Deals'),
@@ -575,9 +575,9 @@
                 // Stat cards row
                 h('div', { className: 'grid-5' },
                     h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'Total Deals'), h('div', { className: 'stat-callout-value' }, data.total.toLocaleString())),
-                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'EU Targets'), h('div', { className: 'stat-callout-value' }, data.euTargetsTotal.toLocaleString())),
-                    h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'USA → EU'), h('div', { className: 'stat-callout-value' }, data.totalUSABuyEU.toLocaleString())),
-                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'EU → USA'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyUSA.toLocaleString())),
+                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'Europe Targets'), h('div', { className: 'stat-callout-value' }, data.euTargetsTotal.toLocaleString())),
+                    h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'USA → Europe'), h('div', { className: 'stat-callout-value' }, data.totalUSABuyEU.toLocaleString())),
+                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'Europe → USA'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyUSA.toLocaleString())),
                     h('div', { className: 'stat-callout teal' }, h('div', { className: 'stat-callout-label' }, 'Disclosed Value'), h('div', { className: 'stat-callout-value' }, '$' + (data.totalDisclosedValue / 1000).toFixed(1) + 'B'))
                 ),
 
@@ -666,16 +666,16 @@
             );
         };
 
-        // ── EU Targets Tab ──
+        // ── Europe Targets Tab ──
         const EUTargetsTab = ({ data }) =>
             h('div', null,
                 h('div', { className: 'grid-3' },
-                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'EU Targets Acquired'), h('div', { className: 'stat-callout-value' }, data.euTargetsTotal.toLocaleString()), h('div', { className: 'stat-callout-meta' }, ((data.euTargetsTotal / data.total) * 100).toFixed(1) + '% of global total')),
-                    h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'USA Buyers of EU'), h('div', { className: 'stat-callout-value' }, data.totalUSABuyEU.toLocaleString()), h('div', { className: 'stat-callout-meta' }, ((data.totalUSABuyEU / data.euTargetsTotal) * 100).toFixed(1) + '% of EU targets')),
-                    h('div', { className: 'stat-callout teal' }, h('div', { className: 'stat-callout-label' }, 'EU-to-EU Acquisitions'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyEU.toLocaleString()), h('div', { className: 'stat-callout-meta' }, ((data.totalEUBuyEU / data.euTargetsTotal) * 100).toFixed(1) + '% of EU targets'))
+                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'Europe Targets Acquired'), h('div', { className: 'stat-callout-value' }, data.euTargetsTotal.toLocaleString()), h('div', { className: 'stat-callout-meta' }, ((data.euTargetsTotal / data.total) * 100).toFixed(1) + '% of global total')),
+                    h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'USA Buyers of Europe'), h('div', { className: 'stat-callout-value' }, data.totalUSABuyEU.toLocaleString()), h('div', { className: 'stat-callout-meta' }, ((data.totalUSABuyEU / data.euTargetsTotal) * 100).toFixed(1) + '% of Europe targets')),
+                    h('div', { className: 'stat-callout teal' }, h('div', { className: 'stat-callout-label' }, 'Intra-Europe Acquisitions'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyEU.toLocaleString()), h('div', { className: 'stat-callout-meta' }, ((data.totalEUBuyEU / data.euTargetsTotal) * 100).toFixed(1) + '% of Europe targets'))
                 ),
                 h('div', { className: 'card' },
-                    h('div', { className: 'card-header' }, 'EU Targets by Acquirer Region'),
+                    h('div', { className: 'card-header' }, 'Europe Targets by Acquirer Region'),
                     h(ResponsiveContainer, { width: '100%', height: 320 },
                         h(BarChart, { data: [{ name: 'Europe', value: data.euByAcquirer.Europe }, { name: 'USA', value: data.euByAcquirer.USA }, { name: 'Asia', value: data.euByAcquirer.Asia }, { name: 'Other', value: data.euByAcquirer.Other }] },
                             h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'name', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS), h(Tooltip, DARK_TOOLTIP),
@@ -685,7 +685,7 @@
                         )
                     ),
                     h('table', null,
-                        h('thead', null, h('tr', null, h('th', null, 'Acquirer Region'), h('th', { style: { textAlign: 'right' } }, 'Transactions'), h('th', { style: { textAlign: 'right' } }, '% of EU Total'))),
+                        h('thead', null, h('tr', null, h('th', null, 'Acquirer Region'), h('th', { style: { textAlign: 'right' } }, 'Transactions'), h('th', { style: { textAlign: 'right' } }, '% of Europe Total'))),
                         h('tbody', null,
                             Object.entries(data.euByAcquirer).map(([region, count]) =>
                                 h('tr', { key: region }, h('td', null, h(RegionBadge, { region })), h('td', { style: { textAlign: 'right' } }, count.toLocaleString()), h('td', { style: { textAlign: 'right' } }, ((count / data.euTargetsTotal) * 100).toFixed(1) + '%'))
@@ -694,13 +694,13 @@
                     )
                 ),
                 h('div', { className: 'card' },
-                    h('div', { className: 'card-header' }, 'EU Target Valuation Analysis'),
+                    h('div', { className: 'card-header' }, 'Europe Target Valuation Analysis'),
                     h('div', { className: 'grid-3' },
                         h('div', null, h('div', { className: 'card-subtitle' }, 'USA Acquirers'),
                             h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'Total Value'), h('div', { className: 'stat-callout-value' }, '$' + (data.euSizeByAcquirer.USA.total / 1000).toFixed(1) + 'B'), h('div', { className: 'stat-callout-meta' }, data.euSizeByAcquirer.USA.count + ' deals')),
                             h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'Average Deal Size'), h('div', { className: 'stat-callout-value' }, '$' + data.euSizeByAcquirer.USA.avg + 'M'), h('div', { className: 'stat-callout-meta' }, 'Median: $' + data.euSizeByAcquirer.USA.median + 'M'))
                         ),
-                        h('div', null, h('div', { className: 'card-subtitle' }, 'EU Acquirers'),
+                        h('div', null, h('div', { className: 'card-subtitle' }, 'Europe Acquirers'),
                             h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'Total Value'), h('div', { className: 'stat-callout-value' }, '$' + (data.euSizeByAcquirer.Europe.total / 1000).toFixed(1) + 'B'), h('div', { className: 'stat-callout-meta' }, data.euSizeByAcquirer.Europe.count + ' deals')),
                             h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'Average Deal Size'), h('div', { className: 'stat-callout-value' }, '$' + data.euSizeByAcquirer.Europe.avg + 'M'), h('div', { className: 'stat-callout-meta' }, 'Median: $' + data.euSizeByAcquirer.Europe.median + 'M'))
                         ),
@@ -730,7 +730,7 @@
             const recent = data.usaBuyEUPerYear.filter(y => y.yr >= 2024).reduce((s, y) => s + y.n, 0);
 
             // Build blocked deal entries for notable list
-            const blockedEntries = (data.blockedDeals || []).map(d => ({ name: d.tgt, country: d.tgtC, acq: d.acq, yr: d.yr, sector: d.sector || '', v: d.v, blocked: true, note: 'blocked by regulators' }));
+            const blockedEntries = (data.blockedDeals || []).map(d => ({ name: d.tgt, country: d.tgtC, acq: d.acq, yr: d.yr, sector: d.sector || '', v: d.v, status: d.status || 'BLOCKED', note: (d.status || 'BLOCKED') === 'IGNORED' ? 'excluded — not a photonics deal' : 'blocked by regulators' }));
             const totalBlockedValue = (data.blockedDeals || []).reduce((s, d) => s + (d.v || 0), 0);
 
             // Notable deals for cards
@@ -756,29 +756,29 @@
 
             return h('div', { className: 'tab-content active' },
                 h('div', { className: 'grid-3' },
-                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'USA → EU Deals'), h('div', { className: 'stat-callout-value' }, data.totalUSABuyEU), h('div', { className: 'stat-callout-meta' }, '$' + (data.totalUSABuyEUValue / 1000).toFixed(1) + 'B disclosed value')),
-                    h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'EU → USA Deals'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyUSA), h('div', { className: 'stat-callout-meta' }, '$' + (data.totalEUBuyUSAValue / 1000).toFixed(1) + 'B disclosed value')),
-                    h('div', { className: 'stat-callout teal' }, h('div', { className: 'stat-callout-label' }, 'EU → EU Deals'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyEU), h('div', { className: 'stat-callout-meta' }, 'European consolidation'))
+                    h('div', { className: 'stat-callout jade' }, h('div', { className: 'stat-callout-label' }, 'USA → Europe Deals'), h('div', { className: 'stat-callout-value' }, data.totalUSABuyEU), h('div', { className: 'stat-callout-meta' }, '$' + (data.totalUSABuyEUValue / 1000).toFixed(1) + 'B disclosed value')),
+                    h('div', { className: 'stat-callout' }, h('div', { className: 'stat-callout-label' }, 'Europe → USA Deals'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyUSA), h('div', { className: 'stat-callout-meta' }, '$' + (data.totalEUBuyUSAValue / 1000).toFixed(1) + 'B disclosed value')),
+                    h('div', { className: 'stat-callout teal' }, h('div', { className: 'stat-callout-label' }, 'Europe → Europe Deals'), h('div', { className: 'stat-callout-value' }, data.totalEUBuyEU), h('div', { className: 'stat-callout-meta' }, 'European consolidation'))
                 ),
                 // Key Risk Findings
                 h('div', { className: 'risk-findings' },
                     h('h3', null, 'Key Risk Findings'),
-                    h(RiskFinding, null, usaPctEU + '% of all acquired EU photonics/tech companies go to US acquirers — the largest single destination.'),
-                    h(RiskFinding, null, 'US buyers pay a median of ', h(HL, null, '$' + data.euSizeByAcquirer.USA.median + 'M'), ' for EU targets vs ', h(HL, null, '$' + data.euSizeByAcquirer.Europe.median + 'M'), ' in intra-EU deals — a ', medianRatio + '× premium, indicating deliberate targeting of high-value IP.'),
-                    h(RiskFinding, null, 'Total US spend acquiring EU companies: ', h(HL, null, '$' + (data.totalUSABuyEUValue / 1000).toFixed(1) + 'B'), ' vs EU spend acquiring US companies: ', h(HL, null, '$' + (data.totalEUBuyUSAValue / 1000).toFixed(1) + 'B'), ' — a ', capitalImbalance + '× imbalance in capital flows.'),
-                    (data.blockedDeals || []).length > 0 ? h(RiskFinding, null, (data.blockedDeals || []).map(d => d.acq + '/' + d.tgt).join(', '), ' (', h(HLR, null, '$' + (totalBlockedValue / 1000).toFixed(0) + 'B'), ') blocked by regulators — excluded from all aggregates. See IP Risk tab for details.') : null,
-                    h(RiskFinding, null, 'Asian buyers (China, Singapore, Taiwan, Japan) account for ', data.totalAsiaBuyEU, ' EU acquisitions — a growing secondary concern for strategic autonomy.'),
-                    h(RiskFinding, null, '2024–2025 acceleration: US buyers did ', recent, ' EU acquisitions in just 2 years — the fastest pace in the dataset.')
+                    h(RiskFinding, null, usaPctEU + '% of all acquired European photonics/tech companies go to US acquirers — the largest single destination.'),
+                    h(RiskFinding, null, 'US buyers pay a median of ', h(HL, null, '$' + data.euSizeByAcquirer.USA.median + 'M'), ' for European targets vs ', h(HL, null, '$' + data.euSizeByAcquirer.Europe.median + 'M'), ' in intra-European deals — a ', medianRatio + '× premium, indicating deliberate targeting of high-value IP.'),
+                    h(RiskFinding, null, 'Total US spend acquiring European companies: ', h(HL, null, '$' + (data.totalUSABuyEUValue / 1000).toFixed(1) + 'B'), ' vs European spend acquiring US companies: ', h(HL, null, '$' + (data.totalEUBuyUSAValue / 1000).toFixed(1) + 'B'), ' — a ', capitalImbalance + '× imbalance in capital flows.'),
+                    (data.blockedDeals || []).length > 0 ? h(RiskFinding, null, (data.blockedDeals || []).filter(d => (d.status || 'BLOCKED') === 'BLOCKED').map(d => d.acq + '/' + d.tgt).join(', ') || 'None', ' blocked; ', (data.blockedDeals || []).filter(d => d.status === 'IGNORED').map(d => d.acq + '/' + d.tgt).join(', ') || 'none', ' ignored (', h(HLR, null, '$' + (totalBlockedValue / 1000).toFixed(0) + 'B'), ' total) — excluded from all aggregates. See IP Risk tab for details.') : null,
+                    h(RiskFinding, null, 'Asian buyers (China, Singapore, Taiwan, Japan) account for ', data.totalAsiaBuyEU, ' European acquisitions — a growing secondary concern for strategic autonomy.'),
+                    h(RiskFinding, null, '2024–2025 acceleration: US buyers did ', recent, ' European acquisitions in just 2 years — the fastest pace in the dataset.')
                 ),
                 // Notable deal cards
                 h('div', { className: 'deal-cards-grid' },
                     h('div', { className: 'card' },
-                        h('div', { className: 'deal-card-header' }, 'Notable US Acquisitions of Critical EU Photonics/Semiconductor Assets'),
+                        h('div', { className: 'deal-card-header' }, 'Notable US Acquisitions of Critical European Photonics/Semiconductor Assets'),
                         h('div', { className: 'deal-card-subtitle' }, 'Selected strategic deals'),
                         ...notableUSBuys.map((d, i) =>
                             h('div', { className: 'deal-entry', key: i },
                                 h('div', { className: 'deal-entry-left' },
-                                    h('div', { className: 'deal-entry-name' }, d.name, h('span', { className: 'country' }, '(' + d.country + ')'), d.blocked ? h('span', { className: 'badge-blocked' }, 'BLOCKED') : null),
+                                    h('div', { className: 'deal-entry-name' }, d.name, h('span', { className: 'country' }, '(' + d.country + ')'), d.status ? h('span', { className: d.status === 'IGNORED' ? 'badge-ignored' : 'badge-blocked' }, d.status) : null),
                                     h('div', { className: 'deal-entry-meta' }, '→ ' + d.acq + ' · ' + d.yr + ' · ' + d.sector + (d.note ? ' — ' + d.note : ''))
                                 ),
                                 h('div', { className: 'deal-entry-value usa-color' }, '$' + (d.v / 1000).toFixed(1) + 'B')
@@ -786,7 +786,7 @@
                         )
                     ),
                     h('div', { className: 'card' },
-                        h('div', { className: 'deal-card-header' }, 'European Countermoves: EU Acquiring US Companies'),
+                        h('div', { className: 'deal-card-header' }, 'European Countermoves: Europe Acquiring US Companies'),
                         h('div', { className: 'deal-card-subtitle' }, 'Europe does buy in the US — but at lower aggregate values'),
                         ...notableEUBuys.map((d, i) =>
                             h('div', { className: 'deal-entry', key: i },
@@ -801,7 +801,7 @@
                 ),
                 // Transaction trend chart
                 h('div', { className: 'card' },
-                    h('div', { className: 'card-header' }, 'USA → EU Transaction Trend'),
+                    h('div', { className: 'card-header' }, 'USA → Europe Transaction Trend'),
                     h(ResponsiveContainer, { width: '100%', height: 320 },
                         h(LineChart, { data: data.usaBuyEUPerYear },
                             h(CartesianGrid, DARK_GRID), h(XAxis, { dataKey: 'yr', ...DARK_XAXIS }), h(YAxis, DARK_YAXIS), h(Tooltip, DARK_TOOLTIP), h(Legend, null),
@@ -811,7 +811,7 @@
                 ),
                 // Deal tables
                 h('div', { className: 'card' },
-                    h('div', { className: 'card-header' }, 'USA → EU Deals'),
+                    h('div', { className: 'card-header' }, 'USA → Europe Deals'),
                     h('div', { className: 'table-container' },
                         h('table', null,
                             h('thead', null, h('tr', null, h('th', null, 'Acquirer'), h('th', null, 'Target'), h('th', null, 'Country'), h('th', null, 'Year'), h('th', null, 'Value ($M)'), h('th', { style: { width: '52px', textAlign: 'center' } }, ''))),
@@ -824,7 +824,7 @@
                     )
                 ),
                 h('div', { className: 'card' },
-                    h('div', { className: 'card-header' }, 'EU → USA Deals'),
+                    h('div', { className: 'card-header' }, 'Europe → USA Deals'),
                     h('div', { className: 'table-container' },
                         h('table', null,
                             h('thead', null, h('tr', null, h('th', null, 'Acquirer'), h('th', null, 'Country'), h('th', null, 'Target'), h('th', null, 'Year'), h('th', null, 'Value ($M)'), h('th', { style: { width: '52px', textAlign: 'center' } }, ''))),
@@ -919,11 +919,11 @@
             const eu24 = all.filter(d => d.tR === 'Europe' && d.yr === 2024).length;
             const eu25 = all.filter(d => d.tR === 'Europe' && d.yr === 2025).length;
             insights.push({ icon: '🚀', title: 'The European photonics exit pool is expanding rapidly',
-                body: [h('span', null, 'EU target activity has grown ', hl(euGrowth + 'x'), ' from 2010–15 to 2021–25. In 2024–25 alone, we tracked ', hlg(eu24 + ' and ' + eu25 + ' EU targets'), ' respectively — a clear sign of deepening M&A liquidity in our core market.')] });
+                body: [h('span', null, 'European target activity has grown ', hl(euGrowth + 'x'), ' from 2010–15 to 2021–25. In 2024–25 alone, we tracked ', hlg(eu24 + ' and ' + eu25 + ' European targets'), ' respectively — a clear sign of deepening M&A liquidity in our core market.')] });
 
             // $500M+ exits
             const bigExits = (y1,y2) => withV.filter(d => d.tR === 'Europe' && d.v >= 500 && d.yr >= y1 && d.yr <= y2).length;
-            insights.push({ icon: '💰', title: 'Large exits (≥$500M) for EU photonics have surged',
+            insights.push({ icon: '💰', title: 'Large exits (≥$500M) for European photonics have surged',
                 body: [h('span', null, 'We count ', hl(bigExits(2010,2015) + ' exit ≥$500M'), ' in 2010–15, ', hl(bigExits(2016,2020) + ' in 2016–20'), ', and ', hl(bigExits(2021,2025) + ' in 2021–25'), '. The addressable exit market for our portfolio companies is materially larger today than when we started investing.')] });
 
             // US acquirer premium
@@ -939,22 +939,22 @@
             const euEuMedR = median(euBuyEU_recent.map(d=>d.v));
             const premR = usaEuMedR && euEuMedR ? (usaEuMedR / euEuMedR).toFixed(1) : '?';
             insights.push({ icon: '🇺🇸', title: 'US buyers pay a ' + premR + 'x premium for European targets',
-                body: [h('span', null, 'Since 2021, US acquirers paid a median of ', hl(fmtM(usaEuMedR || 0)), ' for EU photonics companies vs ', hlg(fmtM(euEuMedR || 0)), ' for intra-European deals — a ', hl(premR + 'x premium'), '. This validates our thesis: we invest at European valuations with upside to a US-premium exit.')] });
+                body: [h('span', null, 'Since 2021, US acquirers paid a median of ', hl(fmtM(usaEuMedR || 0)), ' for European photonics companies vs ', hlg(fmtM(euEuMedR || 0)), ' for intra-European deals — a ', hl(premR + 'x premium'), '. This validates our thesis: we invest at European valuations with upside to a US-premium exit.')] });
 
             // US buyer dominance in big EU exits
             const bigEU = withV.filter(d => d.tR === 'Europe' && d.v >= 500 && d.yr >= 2021).sort((a,b) => b.v - a.v);
             const bigEUbyUS = bigEU.filter(d => d.aR === 'USA');
             if (bigEU.length > 0) {
                 const topExamples = bigEUbyUS.slice(0,4).map(d => d.acq + '→' + d.tgt + ' (' + fmtM(d.v) + ')').join(', ');
-                insights.push({ icon: '🎯', title: pct(bigEUbyUS.length, bigEU.length) + '% of large EU exits go to US acquirers',
-                    body: [h('span', null, 'Of the ', hl(bigEU.length + ' deals ≥$500M'), ' involving EU targets since 2021, ', hl(bigEUbyUS.length + ' were by US buyers'), '. Key examples: ', dtag(topExamples), '. US strategic demand for European photonics is structural, not cyclical.')] });
+                insights.push({ icon: '🎯', title: pct(bigEUbyUS.length, bigEU.length) + '% of large European exits go to US acquirers',
+                    body: [h('span', null, 'Of the ', hl(bigEU.length + ' deals ≥$500M'), ' involving European targets since 2021, ', hl(bigEUbyUS.length + ' were by US buyers'), '. Key examples: ', dtag(topExamples), '. US strategic demand for European photonics is structural, not cyclical.')] });
             }
 
             // Asia buyer growth as additional demand
             const asiaEU_early = all.filter(d => d.aR === 'Asia' && d.tR === 'Europe' && d.yr >= 2010 && d.yr <= 2015).length;
             const asiaEU_late = all.filter(d => d.aR === 'Asia' && d.tR === 'Europe' && d.yr >= 2021 && d.yr <= 2025).length;
             insights.push({ icon: '🌏', title: 'Asian buyers are emerging as a third exit route',
-                body: [h('span', null, 'Asia→EU deals grew from ', hl(asiaEU_early + ' (2010–15)'), ' to ', hl(asiaEU_late + ' (2021–25)'), '. Companies like Renesas, Nikon, and AU Optronics have made significant European acquisitions. A widening buyer pool supports valuations and gives our portfolio companies more strategic options at exit.')] });
+                body: [h('span', null, 'Asia→Europe deals grew from ', hl(asiaEU_early + ' (2010–15)'), ' to ', hl(asiaEU_late + ' (2021–25)'), '. Companies like Renesas, Nikon, and AU Optronics have made significant European acquisitions. A widening buyer pool supports valuations and gives our portfolio companies more strategic options at exit.')] });
 
             // Valuation gap = opportunity
             const usaMed = median(withV.filter(d => d.tR === 'USA').map(d=>d.v));
@@ -1097,10 +1097,10 @@
                 ),
                 // KPI cards
                 h('div', { className: 'grid-4', style: { margin: '0 0 20px' } },
-                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'EU TARGETS (2021–25)'), h('div', { className: 'stat-value' }, euTargets2125.toLocaleString())),
-                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'EU EXITS ≥$500M (2021–25)'), h('div', { className: 'stat-value' }, bigExits)),
-                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'US→EU PREMIUM'), h('div', { className: 'stat-value' }, premiumX + 'x')),
-                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'ASIA→EU DEALS (2021–25)'), h('div', { className: 'stat-value' }, asiaEU))
+                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'EUROPE TARGETS (2021–25)'), h('div', { className: 'stat-value' }, euTargets2125.toLocaleString())),
+                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'EUROPE EXITS ≥$500M (2021–25)'), h('div', { className: 'stat-value' }, bigExits)),
+                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'US→EUROPE PREMIUM'), h('div', { className: 'stat-value' }, premiumX + 'x')),
+                    h('div', { className: 'stat-card' }, h('div', { className: 'stat-label' }, 'ASIA→EUROPE DEALS (2021–25)'), h('div', { className: 'stat-value' }, asiaEU))
                 ),
                 // Disclaimer
                 h('div', { className: 'card thesis-card' },
@@ -1210,7 +1210,7 @@
                         h('h3', { style: { fontSize: '16px', color: '#FFBD48', marginBottom: '12px', marginTop: '20px' } }, 'Technology Valuation Metrics'),
                         h('p', { className: 'text-small', style: { marginBottom: '12px' } }, 'Disclosed photonics deals typically command 3-8x revenue multiples based on IP defensibility. The largest deals (>$10B) usually target companies with patent moats in integrated photonics, quantum sensors, or specialty semiconductors.'),
                         h('h3', { style: { fontSize: '16px', color: '#FFBD48', marginBottom: '12px', marginTop: '20px' } }, 'Cross-Border Integration Risks'),
-                        h('p', { className: 'text-small' }, 'USA→EU transactions benefit from stronger EU IP enforcement but face longer patent prosecution timelines. EU→USA deals gain access to US markets but must address stringent US patent standards. Both directions benefit from trade secret consolidation under unified policies.')
+                        h('p', { className: 'text-small' }, 'USA→Europe transactions benefit from stronger EU IP enforcement but face longer patent prosecution timelines. Europe→USA deals gain access to US markets but must address stringent US patent standards. Both directions benefit from trade secret consolidation under unified policies.')
                     )
                 )
             );
@@ -1236,8 +1236,8 @@
             if (data.allDeals && data.allDeals.length > 0) {
                 allPool.length = 0; // clear and use allDeals instead
                 data.allDeals.forEach(d => {
-                    const flow = d.aR === 'USA' && d.tR === 'Europe' ? 'USA → EU' :
-                                 d.aR === 'Europe' && d.tR === 'USA' ? 'EU → USA' :
+                    const flow = d.aR === 'USA' && d.tR === 'Europe' ? 'USA → Europe' :
+                                 d.aR === 'Europe' && d.tR === 'USA' ? 'Europe → USA' :
                                  d.aR + ' → ' + d.tR;
                     allPool.push({ acq: d.acq, tgt: d.tgt, yr: d.yr, mo: d.mo, v: d.v, url: d.url, flow, tgtC: d.tgtC || '', acqC: d.acqC || '', aR: d.aR, tR: d.tR, type: d.type || '' });
                 });
