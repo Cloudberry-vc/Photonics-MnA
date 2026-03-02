@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Email workflow (deprecated)
+scraper/parse_reply.py
+scraper/deal_map.json

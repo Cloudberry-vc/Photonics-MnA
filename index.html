@@ -493,6 +493,7 @@
             const [data, setData] = useState(null);
             const [loading, setLoading] = useState(true);
             const [activeTab, setActiveTab] = useState('overview');
+            const showReview = new URLSearchParams(window.location.search).has('review');
 
             useEffect(() => {
                 (async () => {
@@ -515,7 +516,7 @@
 
             return h(React.Fragment, null,
                 h(Header, { data }),
-                h(TabBar, { activeTab, setActiveTab }),
+                h(TabBar, { activeTab, setActiveTab, showReview }),
                 h('div', { className: 'container' },
                     activeTab === 'overview' ? h(OverviewTab, { data }) : null,
                     activeTab === 'eutargets' ? h(EUTargetsTab, { data }) : null,
@@ -524,7 +525,8 @@
                     activeTab === 'iprisk' ? h(IPRiskTab, { data }) : null,
                     activeTab === 'latest' ? h(LatestDealsTab, { data }) : null,
                     activeTab === 'alldata' ? h(AllDataTab, { data }) : null,
-                    activeTab === 'cloudberry' ? h(CloudberryViewTab, { data }) : null
+                    activeTab === 'cloudberry' ? h(CloudberryViewTab, { data }) : null,
+                    activeTab === 'review' && showReview ? h(ReviewTab, { data }) : null
                 ),
                 h(FooterSection, { data })
             );
@@ -553,7 +555,7 @@
             );
 
         // ── TabBar ──
-        const TabBar = ({ activeTab, setActiveTab }) =>
+        const TabBar = ({ activeTab, setActiveTab, showReview }) =>
             h('div', { className: 'tab-bar' },
                 h('button', { className: 'tab' + (activeTab === 'overview' ? ' active' : ''), onClick: () => setActiveTab('overview') }, 'Overview'),
                 h('button', { className: 'tab' + (activeTab === 'eutargets' ? ' active' : ''), onClick: () => setActiveTab('eutargets') }, 'Europe Targets'),
@@ -562,7 +564,8 @@
                 h('button', { className: 'tab' + (activeTab === 'iprisk' ? ' active' : ''), onClick: () => setActiveTab('iprisk') }, 'IP Risk'),
                 h('button', { className: 'tab' + (activeTab === 'latest' ? ' active' : ''), onClick: () => setActiveTab('latest') }, 'Latest Deals'),
                 h('button', { className: 'tab' + (activeTab === 'alldata' ? ' active' : ''), onClick: () => setActiveTab('alldata') }, 'All Data'),
-                h('button', { className: 'tab' + (activeTab === 'cloudberry' ? ' active' : ''), onClick: () => setActiveTab('cloudberry'), style: { color: activeTab === 'cloudberry' ? '#178287' : undefined } }, 'Cloudberry View')
+                h('button', { className: 'tab' + (activeTab === 'cloudberry' ? ' active' : ''), onClick: () => setActiveTab('cloudberry'), style: { color: activeTab === 'cloudberry' ? '#178287' : undefined } }, 'Cloudberry View'),
+                showReview ? h('button', { className: 'tab' + (activeTab === 'review' ? ' active' : ''), onClick: () => setActiveTab('review'), style: { color: activeTab === 'review' ? '#FFBD48' : '#6B7280', fontSize: '13px' } }, 'Review') : null
             );
 
         // ── Overview Tab ──
@@ -1332,6 +1335,280 @@
                                     )
                             )
                         )
+                    )
+                )
+            );
+        };
+
+        // ── Review Tab (classification editor) ──
+        const ReviewTab = ({ data }) => {
+            const [reviewDeals, setReviewDeals] = useState(null);
+            const [loadError, setLoadError] = useState(null);
+            const [search, setSearch] = useState('');
+            const [filterMode, setFilterMode] = useState('all'); // all, relevant, other
+            const [sortCol, setSortCol] = useState('yr');
+            const [sortDir, setSortDir] = useState('desc');
+            const [page, setPage] = useState(0);
+            const [changeCount, setChangeCount] = useState(0);
+            const PAGE_SIZE = 50;
+
+            // Load review.json on mount
+            useEffect(() => {
+                (async () => {
+                    try {
+                        const r = await fetch('review.json');
+                        if (!r.ok) { setLoadError('review.json not found — run the weekly update first'); return; }
+                        const raw = await r.json();
+                        setReviewDeals(raw.deals || []);
+                    } catch (e) { setLoadError('Failed to load review.json: ' + e.message); }
+                })();
+            }, []);
+
+            // ALL hooks must be above any early return
+            const filteredIndices = React.useMemo(() => {
+                if (!reviewDeals) return [];
+                const q = search.toLowerCase();
+                const indices = [];
+                reviewDeals.forEach((d, i) => {
+                    if (filterMode === 'relevant' && d.cls !== 'relevant') return;
+                    if (filterMode === 'other' && d.cls !== 'other') return;
+                    if (q && !(
+                        (d.acq || '').toLowerCase().includes(q) ||
+                        (d.tgt || '').toLowerCase().includes(q) ||
+                        (d.acqC || '').toLowerCase().includes(q) ||
+                        (d.tgtC || '').toLowerCase().includes(q) ||
+                        String(d.yr).includes(q)
+                    )) return;
+                    indices.push(i);
+                });
+                return indices;
+            }, [reviewDeals, search, filterMode]);
+
+            const sortedIndices = React.useMemo(() => {
+                if (!reviewDeals) return [];
+                const arr = [...filteredIndices];
+                const dir = sortDir === 'asc' ? 1 : -1;
+                arr.sort((a, b) => {
+                    const ad = reviewDeals[a], bd = reviewDeals[b];
+                    if (sortCol === 'cls') {
+                        return (ad.cls < bd.cls ? -1 : ad.cls > bd.cls ? 1 : 0) * dir;
+                    }
+                    if (sortCol === 'v') return ((ad.v || 0) - (bd.v || 0)) * dir;
+                    if (sortCol === 'yr') return ((ad.yr || 0) - (bd.yr || 0)) * dir;
+                    const av = (ad[sortCol] || '').toLowerCase(), bv = (bd[sortCol] || '').toLowerCase();
+                    return av < bv ? -dir : av > bv ? dir : 0;
+                });
+                return arr;
+            }, [filteredIndices, sortCol, sortDir, reviewDeals]);
+
+            const totalPages = Math.ceil(sortedIndices.length / PAGE_SIZE);
+            const pagedIndices = sortedIndices.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+            React.useEffect(() => { setPage(0); }, [search, filterMode, sortCol, sortDir]);
+
+            // Early returns AFTER all hooks
+            if (loadError) return h('div', { className: 'tab-content active' },
+                h('div', { className: 'card', style: { padding: '40px', textAlign: 'center' } },
+                    h('div', { style: { fontSize: '16px', color: '#9CA3AF', marginBottom: '12px' } }, loadError),
+                    h('div', { style: { fontSize: '13px', color: '#6B7280' } }, 'The review.json file is generated by the weekly update pipeline.')
+                )
+            );
+
+            if (!reviewDeals) return h('div', { className: 'tab-content active' },
+                h('div', { style: { textAlign: 'center', padding: '40px', color: '#9CA3AF' } }, 'Loading review data...')
+            );
+
+            const toggleDeal = (idx) => {
+                setReviewDeals(prev => {
+                    const updated = [...prev];
+                    const deal = { ...updated[idx] };
+                    deal.cls = deal.cls === 'relevant' ? 'other' : 'relevant';
+                    updated[idx] = deal;
+                    return updated;
+                });
+                setChangeCount(c => c + 1);
+            };
+
+            const handleSort = (col) => {
+                if (sortCol === col) setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+                else { setSortCol(col); setSortDir(col === 'yr' || col === 'v' ? 'desc' : 'asc'); }
+            };
+
+            const SortTh = ({ col, label, style }) =>
+                h('th', {
+                    className: 'sortable' + (sortCol === col ? ' ' + sortDir : ''),
+                    onClick: () => handleSort(col),
+                    style: { ...style, cursor: 'pointer' }
+                }, label);
+
+            const relevantCount = reviewDeals.filter(d => d.cls === 'relevant').length;
+            const otherCount = reviewDeals.filter(d => d.cls === 'other').length;
+
+            // Download classified_deals.json
+            const downloadClassifications = () => {
+                const output = reviewDeals.map((d, i) => ({
+                    idx: i, yr: d.yr, acq: d.acq, tgt: d.tgt, classification: d.cls
+                }));
+                const blob = new Blob([JSON.stringify(output)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'classified_deals.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+
+            // Download review.json (full data for next time)
+            const downloadReviewJson = () => {
+                const output = {
+                    generated: new Date().toISOString().slice(0, 10),
+                    totalDeals: reviewDeals.length,
+                    deals: reviewDeals
+                };
+                const blob = new Blob([JSON.stringify(output)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'review.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+
+            // Page buttons (same pattern as AllDataTab)
+            const pageButtons = () => {
+                const btns = [];
+                btns.push(h('button', { className: 'page-btn', key: 'prev', disabled: page === 0, onClick: () => setPage(p => p - 1) }, String.fromCharCode(8592)));
+                const start = Math.max(0, page - 3);
+                const end = Math.min(totalPages, start + 7);
+                for (let i = start; i < end; i++) {
+                    btns.push(h('button', { className: 'page-btn' + (i === page ? ' active' : ''), key: i, onClick: () => setPage(i) }, i + 1));
+                }
+                btns.push(h('button', { className: 'page-btn', key: 'next', disabled: page >= totalPages - 1, onClick: () => setPage(p => p + 1) }, String.fromCharCode(8594)));
+                return btns;
+            };
+
+            return h('div', { className: 'tab-content active' },
+                // Header
+                h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: '16px' } },
+                    h('div', null,
+                        h('div', { style: { fontSize: '18px', fontWeight: 700, color: '#F9FAFB' } }, 'Deal Classification Review'),
+                        h('div', { style: { fontSize: '13px', color: '#9CA3AF', marginTop: '4px' } },
+                            reviewDeals.length.toLocaleString() + ' total deals: ',
+                            h('span', { style: { color: '#178287' } }, relevantCount + ' relevant'),
+                            ' / ',
+                            h('span', { style: { color: '#6B7280' } }, otherCount + ' ignored'),
+                            changeCount > 0 ? h('span', { style: { color: '#FFBD48', marginLeft: '12px' } }, '(' + changeCount + ' changes)') : null
+                        )
+                    ),
+                    h('div', { style: { display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' } },
+                        h('input', {
+                            className: 'search-box',
+                            type: 'text',
+                            placeholder: 'Search deals...',
+                            value: search,
+                            onChange: (e) => setSearch(e.target.value),
+                            style: { width: '220px' }
+                        }),
+                        // Filter buttons
+                        h('button', {
+                            className: 'page-btn' + (filterMode === 'all' ? ' active' : ''),
+                            onClick: () => setFilterMode('all'),
+                            style: { fontSize: '12px', padding: '6px 12px' }
+                        }, 'All'),
+                        h('button', {
+                            className: 'page-btn' + (filterMode === 'relevant' ? ' active' : ''),
+                            onClick: () => setFilterMode('relevant'),
+                            style: { fontSize: '12px', padding: '6px 12px', color: filterMode === 'relevant' ? '#178287' : undefined }
+                        }, 'Relevant'),
+                        h('button', {
+                            className: 'page-btn' + (filterMode === 'other' ? ' active' : ''),
+                            onClick: () => setFilterMode('other'),
+                            style: { fontSize: '12px', padding: '6px 12px', color: filterMode === 'other' ? '#EF4444' : undefined }
+                        }, 'Ignored')
+                    )
+                ),
+
+                // Download bar
+                changeCount > 0 ? h('div', { style: {
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    padding: '12px 20px', marginBottom: '16px', borderRadius: '8px',
+                    background: 'rgba(255,189,72,0.1)', border: '1px solid rgba(255,189,72,0.3)'
+                } },
+                    h('span', { style: { color: '#FFBD48', fontSize: '13px' } },
+                        'You have unsaved changes. Download both files and commit to the repo to update the dashboard.'
+                    ),
+                    h('div', { style: { display: 'flex', gap: '8px' } },
+                        h('button', {
+                            onClick: downloadClassifications,
+                            style: {
+                                padding: '8px 16px', borderRadius: '6px', border: 'none', cursor: 'pointer',
+                                background: '#FFBD48', color: '#202647', fontWeight: 600, fontSize: '13px'
+                            }
+                        }, 'Download classified_deals.json'),
+                        h('button', {
+                            onClick: downloadReviewJson,
+                            style: {
+                                padding: '8px 16px', borderRadius: '6px', border: '1px solid rgba(255,189,72,0.4)', cursor: 'pointer',
+                                background: 'transparent', color: '#FFBD48', fontWeight: 500, fontSize: '13px'
+                            }
+                        }, 'Download review.json')
+                    )
+                ) : null,
+
+                // Table
+                h('div', { className: 'card' },
+                    h('div', { className: 'table-container' },
+                        h('table', null,
+                            h('thead', null,
+                                h('tr', null,
+                                    h('th', { style: { width: '70px', textAlign: 'center' } }, 'Relevant'),
+                                    h(SortTh, { col: 'yr', label: 'Year' }),
+                                    h(SortTh, { col: 'acq', label: 'Acquirer' }),
+                                    h(SortTh, { col: 'aR', label: 'Region', style: { width: '80px' } }),
+                                    h(SortTh, { col: 'tgt', label: 'Target' }),
+                                    h(SortTh, { col: 'tR', label: 'Region', style: { width: '80px' } }),
+                                    h(SortTh, { col: 'v', label: 'Value ($M)', style: { textAlign: 'right', width: '100px' } })
+                                )
+                            ),
+                            h('tbody', null,
+                                pagedIndices.length === 0
+                                    ? h('tr', null, h('td', { colSpan: 7, style: { textAlign: 'center', color: '#6B7280', padding: '40px' } }, 'No deals match your filter'))
+                                    : pagedIndices.map(idx => {
+                                        const d = reviewDeals[idx];
+                                        const isRelevant = d.cls === 'relevant';
+                                        return h('tr', { key: idx, style: { opacity: isRelevant ? 1 : 0.5 } },
+                                            h('td', { style: { textAlign: 'center' } },
+                                                h('input', {
+                                                    type: 'checkbox',
+                                                    checked: isRelevant,
+                                                    onChange: () => toggleDeal(idx),
+                                                    style: { width: '18px', height: '18px', cursor: 'pointer', accentColor: '#178287' }
+                                                })
+                                            ),
+                                            h('td', null, d.yr),
+                                            h('td', { style: { fontWeight: 600 } }, d.acq, d.acqC ? h('span', { style: { color: '#6B7280', marginLeft: '6px', fontSize: '11px' } }, '(' + d.acqC + ')') : null),
+                                            h('td', null, h(RegionBadge, { region: d.aR || 'Other' })),
+                                            h('td', null, d.tgt, d.tgtC ? h('span', { style: { color: '#6B7280', marginLeft: '6px', fontSize: '11px' } }, '(' + d.tgtC + ')') : null),
+                                            h('td', null, h(RegionBadge, { region: d.tR || 'Other' })),
+                                            h('td', { style: { textAlign: 'right', fontWeight: 600 } }, d.v ? '$' + d.v.toLocaleString() : String.fromCharCode(8212))
+                                        );
+                                    })
+                            )
+                        )
+                    ),
+                    totalPages > 1 ? h('div', { className: 'pagination' },
+                        ...pageButtons(),
+                        h('span', { className: 'page-info' }, 'Page ' + (page + 1) + ' of ' + totalPages + ' (' + sortedIndices.length + ' deals)')
+                    ) : null
+                ),
+
+                // Instructions
+                h('div', { style: { marginTop: '16px', padding: '16px 24px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' } },
+                    h('div', { style: { fontSize: '12px', color: '#9CA3AF', lineHeight: '1.8' } },
+                        'Toggle checkboxes to classify deals as relevant (shown on dashboard) or ignored (excluded). ',
+                        'When done, download both files and commit them to the ',
+                        h('span', { style: { fontFamily: 'monospace', background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '3px' } }, 'scraper/'),
+                        ' directory. The GitHub Action will regenerate data.json automatically.'
                     )
                 )
             );
