@@ -924,7 +924,7 @@
             // $500M+ exits
             const bigExits = (y1,y2) => withV.filter(d => d.tR === 'Europe' && d.v >= 500 && d.yr >= y1 && d.yr <= y2).length;
             insights.push({ icon: '💰', title: 'Large exits (≥$500M) for European photonics have surged',
-                body: [h('span', null, 'We count ', hl(bigExits(2010,2015) + ' exit ≥$500M'), ' in 2010–15, ', hl(bigExits(2016,2020) + ' in 2016–20'), ', and ', hl(bigExits(2021,2025) + ' in 2021–25'), '. The addressable exit market for our portfolio companies is materially larger today than when we started investing.')] });
+                body: [h('span', null, 'We count ', hl(bigExits(2010,2015) + ' exit ≥$500M'), ' in 2010–15, ', hl(bigExits(2016,2020) + ' in 2016–20'), ', and ', hl(bigExits(2021,2025) + ' in 2021–25'), '. The addressable exit market for European photonics companies has grown significantly over the past decade.')] });
 
             // US acquirer premium
             const usaBuyEU = withV.filter(d => d.aR === 'USA' && d.tR === 'Europe');
@@ -939,7 +939,7 @@
             const euEuMedR = median(euBuyEU_recent.map(d=>d.v));
             const premR = usaEuMedR && euEuMedR ? (usaEuMedR / euEuMedR).toFixed(1) : '?';
             insights.push({ icon: '🇺🇸', title: 'US buyers pay a ' + premR + 'x premium for European targets',
-                body: [h('span', null, 'Since 2021, US acquirers paid a median of ', hl(fmtM(usaEuMedR || 0)), ' for European photonics companies vs ', hlg(fmtM(euEuMedR || 0)), ' for intra-European deals — a ', hl(premR + 'x premium'), '. This validates our thesis: we invest at European valuations with upside to a US-premium exit.')] });
+                body: [h('span', null, 'Since 2021, US acquirers paid a median of ', hl(fmtM(usaEuMedR || 0)), ' for European photonics companies vs ', hlg(fmtM(euEuMedR || 0)), ' for intra-European deals — a ', hl(premR + 'x premium'), '. Until European premiums rise, the USA remains the primary exit market for European photonics companies seeking top valuations.')] });
 
             // US buyer dominance in big EU exits
             const bigEU = withV.filter(d => d.tR === 'Europe' && d.v >= 500 && d.yr >= 2021).sort((a,b) => b.v - a.v);
@@ -961,7 +961,7 @@
             const euMed = median(withV.filter(d => d.tR === 'Europe').map(d=>d.v));
             const gap = usaMed && euMed ? (usaMed / euMed).toFixed(1) : '?';
             insights.push({ icon: '📐', title: 'European deal sizes are ' + gap + 'x smaller than US — our entry advantage',
-                body: [h('span', null, 'The median European photonics transaction (', hlg(fmtM(euMed || 0)), ') is ~1/' + gap + 'th of the US median (', hl(fmtM(usaMed || 0)), '). We see this as a valuation gap, not a quality gap. European photonics companies often match US peers in technology but trade at a discount — an asymmetry Cloudberry is positioned to capture.')] });
+                body: [h('span', null, 'The median European photonics transaction (', hlg(fmtM(euMed || 0)), ') is roughly 1/' + Math.round(parseFloat(gap)) + 'rd of the US median (', hl(fmtM(usaMed || 0)), '). We see this as a valuation gap, not a quality gap. European photonics companies often match US peers in technology but trade at a discount — an asymmetry Cloudberry is positioned to capture.')] });
 
             // EU share of market
             const euShare = pct(all.filter(d => d.tR === 'Europe').length, all.length);
@@ -1032,7 +1032,7 @@
                 h('div', { className: 'card' },
                     h('div', { className: 'card-header' }, 'Key Takeaways'),
                     h('div', { className: 'insight-disclaimer' },
-                        h('strong', null, 'Disclaimer: '), 'These insights are auto-generated from the underlying deal data and refreshed each time the dataset updates. Only ~25–30% of deals disclose transaction values; figures reflect this disclosed subset only. Median and mean calculations may be volatile for regions or years with small sample sizes. This analysis is for informational purposes and does not constitute investment advice.'
+                        h('strong', null, 'Disclaimer: '), 'These insights are auto-generated from the underlying deal data and refreshed each time the dataset updates, then verified by a human before release. Only ~25–30% of deals disclose transaction values; figures reflect this disclosed subset only. Median and mean calculations may be volatile for regions or years with small sample sizes. This analysis is for informational purposes and does not constitute investment advice.'
                     ),
                     ...generateTimelineInsights(data).map((ins, i) =>
                         h('div', { className: 'insight-item', key: 'ti-' + i },
@@ -1105,7 +1105,7 @@
                 // Disclaimer
                 h('div', { className: 'card thesis-card' },
                     h('div', { className: 'insight-disclaimer' },
-                        h('strong', null, 'Disclaimer: '), 'The following analysis is auto-generated from raw deal data and refreshed each time the dataset updates. Only disclosed-value transactions (~25–30% of total) are included in value-based metrics. This does not constitute investment advice. Cloudberry VC makes its own independent investment decisions.'
+                        h('strong', null, 'Disclaimer: '), 'The following analysis is auto-generated from raw deal data and refreshed each time the dataset updates, then verified by a human before release. Only disclosed-value transactions (~25–30% of total) are included in value-based metrics. This does not constitute investment advice. Cloudberry VC makes its own independent investment decisions.'
                     ),
                     // Dynamic insights
                     ...generateCloudberryInsights(data).map((ins, i) =>
