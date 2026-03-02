@@ -281,18 +281,20 @@
         // Default fallback data
         const DEFAULT_DATA = {
             lastUpdated: "2026-03-01",
-            total: 1985,
-            euTargetsTotal: 745,
-            totalUSABuyEU: 268,
-            totalEUBuyUSA: 140,
-            totalEUBuyEU: 406,
-            totalAsiaBuyEU: 56,
-            totalDisclosedValue: 261861,
+            total: 1720,
+            totalUnfiltered: 1990,
+            excludedDeals: 270,
+            euTargetsTotal: 643,
+            totalUSABuyEU: 231,
+            totalEUBuyUSA: 123,
+            totalEUBuyEU: 353,
+            totalAsiaBuyEU: 47,
+            totalDisclosedValue: 347362,
             totalUSABuyEUValue: 38838,
             totalEUBuyUSAValue: 13507,
-            targetsByRegion: { "Europe": 745, "USA": 1004, "Asia": 105, "Other": 131 },
-            acquirersByRegion: { "USA": 1180, "Europe": 599, "Asia": 149, "Other": 57 },
-            euByAcquirer: { "Europe": 406, "USA": 268, "Asia": 56, "Other": 15 },
+            targetsByRegion: { "Europe": 643, "USA": 866, "Asia": 92, "Other": 119 },
+            acquirersByRegion: { "USA": 1020, "Europe": 524, "Asia": 128, "Other": 48 },
+            euByAcquirer: { "Europe": 353, "USA": 231, "Asia": 47, "Other": 12 },
             euSizeByAcquirer: {
                 "USA": { "avg": 275, "median": 290, "total": 38838, "count": 141 },
                 "Europe": { "avg": 336, "median": 69, "total": 64800, "count": 193 },
@@ -379,10 +381,7 @@
                 { "acq": "Prior Scientific", "acqC": "United Kingdom", "tgt": "Kinetic Systems", "yr": 2025, "v": null, "url": "https://www.prior.com/news/prior-scientific-instruments-strengthens-global-position-with-strategic-acquisition-of-us-vibration-isolation-specialist" }
             ],
             topDeals: [
-                { "yr": 2023, "acq": "Broadcom", "aR": "USA", "tgt": "VMware", "tR": "USA", "v": 61000, "url": "https://www.lightwaveonline.com/business/mergers-acquisitions/article/14277268/broadcom-to-buy-vmware" },
-                { "yr": 2025, "acq": "AT&T", "aR": "USA", "tgt": "EchoStar Spectrum", "tR": "USA", "v": 23000, "url": "" },
                 { "yr": 2025, "acq": "Skyworks", "aR": "USA", "tgt": "Qorvo", "tR": "USA", "v": 22000, "url": "https://www.qorvo.com/newsroom/news/2025/skyworks-and-qorvo-to-combine-to-create-22-billion-us-based-leader" },
-                { "yr": 2018, "acq": "Broadcom", "aR": "USA", "tgt": "CA Technologies", "tR": "USA", "v": 18900, "url": "" },
                 { "yr": 2016, "acq": "Analog Devices", "aR": "USA", "tgt": "Linear Technology", "tR": "USA", "v": 14936, "url": "" },
                 { "yr": 2025, "acq": "Amphenol", "aR": "USA", "tgt": "CommScope CCS", "tR": "USA", "v": 10500, "url": "https://investors.amphenol.com/news-and-events/news-details/2025/Amphenol-Corporation-to-Acquire-Connectivity-and-Cable-Solutions-Business-From-CommScope/default.aspx" },
                 { "yr": 2025, "acq": "Thoma Bravo", "aR": "USA", "tgt": "Boeing Digital Aviation", "tR": "USA", "v": 10550, "url": "https://investors.boeing.com/investors/news/press-release-details/2025/Boeing-to-Sell-Portions-of-Digital-Aviation-Solutions-to-Thoma-Bravo-for-10-55-Billion/default.aspx" },
@@ -539,15 +538,16 @@
                         h(BerryIcon),
                         h('div', { className: 'header-text' },
                             h('h1', null, 'Photonics M&A Dashboard ', h('span', { style: { fontSize: '14px', fontWeight: 500, color: '#9CA3AF', verticalAlign: 'super' } }, 'beta v0.1')),
-                            h('p', null, h(EpicLink), ' Photonics Index', h('span', { style: { color: '#9CA3AF', fontSize: '11px', marginLeft: '8px' } }, '(dataset includes semiconductor & adjacent deals)'))
+                            h('p', null, 'Based on ', h(EpicLink), ' Photonics M&A Index', h('span', { style: { color: '#9CA3AF', fontSize: '11px', marginLeft: '8px' } }, '(dataset includes semiconductor deals)'))
                         )
                     ),
                     h('div', { className: 'header-stats' },
                         h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.total.toLocaleString()), h('div', { className: 'stat-label' }, 'Total Deals')),
                         h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, '$' + (data.totalDisclosedValue / 1000).toFixed(1) + 'B'), h('div', { className: 'stat-label' }, 'Disclosed Value')),
                         h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.euTargetsTotal.toLocaleString()), h('div', { className: 'stat-label' }, 'Europe Targets')),
-                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.totalUSABuyEU), h('div', { className: 'stat-label' }, 'USA→Europe')),
-                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.totalAsiaBuyEU), h('div', { className: 'stat-label' }, 'Asia→Europe'))
+                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.totalUSABuyEU), h('div', { className: 'stat-label' }, 'USA\u2192Europe')),
+                        h('div', { className: 'stat-box' }, h('div', { className: 'stat-value' }, data.totalAsiaBuyEU), h('div', { className: 'stat-label' }, 'Asia\u2192Europe')),
+                        data.excludedDeals ? h('div', { className: 'stat-box' }, h('div', { className: 'stat-value', style: { color: '#6B7280', fontSize: '22px' } }, data.excludedDeals), h('div', { className: 'stat-label' }, 'Ignored (relevance)')) : null
                     )
                 )
             );
@@ -730,7 +730,7 @@
             const recent = data.usaBuyEUPerYear.filter(y => y.yr >= 2024).reduce((s, y) => s + y.n, 0);
 
             // Build blocked deal entries for notable list
-            const blockedEntries = (data.blockedDeals || []).map(d => ({ name: d.tgt, country: d.tgtC, acq: d.acq, yr: d.yr, sector: d.sector || '', v: d.v, status: d.status || 'BLOCKED', note: (d.status || 'BLOCKED') === 'IGNORED' ? 'excluded — not a photonics deal' : 'blocked by regulators' }));
+            const blockedEntries = (data.blockedDeals || []).map(d => ({ name: d.tgt, country: d.tgtC, acq: d.acq, yr: d.yr, sector: d.sector || '', v: d.v, status: 'BLOCKED', note: 'blocked by regulators' }));
             const totalBlockedValue = (data.blockedDeals || []).reduce((s, d) => s + (d.v || 0), 0);
 
             // Notable deals for cards
@@ -766,7 +766,7 @@
                     h(RiskFinding, null, usaPctEU + '% of all acquired European photonics/tech companies go to US acquirers — the largest single destination.'),
                     h(RiskFinding, null, 'US buyers pay a median of ', h(HL, null, '$' + data.euSizeByAcquirer.USA.median + 'M'), ' for European targets vs ', h(HL, null, '$' + data.euSizeByAcquirer.Europe.median + 'M'), ' in intra-European deals — a ', medianRatio + '× premium, indicating deliberate targeting of high-value IP.'),
                     h(RiskFinding, null, 'Total US spend acquiring European companies: ', h(HL, null, '$' + (data.totalUSABuyEUValue / 1000).toFixed(1) + 'B'), ' vs European spend acquiring US companies: ', h(HL, null, '$' + (data.totalEUBuyUSAValue / 1000).toFixed(1) + 'B'), ' — a ', capitalImbalance + '× imbalance in capital flows.'),
-                    (data.blockedDeals || []).length > 0 ? h(RiskFinding, null, (data.blockedDeals || []).filter(d => (d.status || 'BLOCKED') === 'BLOCKED').map(d => d.acq + '/' + d.tgt).join(', ') || 'None', ' blocked; ', (data.blockedDeals || []).filter(d => d.status === 'IGNORED').map(d => d.acq + '/' + d.tgt).join(', ') || 'none', ' ignored (', h(HLR, null, '$' + (totalBlockedValue / 1000).toFixed(0) + 'B'), ' total) — excluded from all aggregates. See IP Risk tab for details.') : null,
+                    (data.blockedDeals || []).length > 0 ? h(RiskFinding, null, (data.blockedDeals || []).map(d => d.acq + '/' + d.tgt).join(', '), ' (', h(HLR, null, '$' + (totalBlockedValue / 1000).toFixed(0) + 'B'), ') blocked by regulators — excluded from all aggregates.', data.excludedDeals ? ' Additionally, ' + data.excludedDeals + ' deals were ignored for relevance.' : '') : null,
                     h(RiskFinding, null, 'Asian buyers (China, Singapore, Taiwan, Japan) account for ', data.totalAsiaBuyEU, ' European acquisitions — a growing secondary concern for strategic autonomy.'),
                     h(RiskFinding, null, '2024–2025 acceleration: US buyers did ', recent, ' European acquisitions in just 2 years — the fastest pace in the dataset.')
                 ),
@@ -778,7 +778,7 @@
                         ...notableUSBuys.map((d, i) =>
                             h('div', { className: 'deal-entry', key: i },
                                 h('div', { className: 'deal-entry-left' },
-                                    h('div', { className: 'deal-entry-name' }, d.name, h('span', { className: 'country' }, '(' + d.country + ')'), d.status ? h('span', { className: d.status === 'IGNORED' ? 'badge-ignored' : 'badge-blocked' }, d.status) : null),
+                                    h('div', { className: 'deal-entry-name' }, d.name, h('span', { className: 'country' }, '(' + d.country + ')'), d.status ? h('span', { className: 'badge-blocked' }, d.status) : null),
                                     h('div', { className: 'deal-entry-meta' }, '→ ' + d.acq + ' · ' + d.yr + ' · ' + d.sector + (d.note ? ' — ' + d.note : ''))
                                 ),
                                 h('div', { className: 'deal-entry-value usa-color' }, '$' + (d.v / 1000).toFixed(1) + 'B')
@@ -1091,7 +1091,7 @@
                         h('img', { src: 'cloudberryvc-icon.svg', alt: 'Cloudberry VC' }),
                         h('div', null,
                             h('div', { className: 'card-header', style: { color: '#3BA8AE', marginBottom: '4px' } }, 'Cloudberry View: European Semi & Photonics'),
-                            h('div', { style: { color: '#9CA3AF', fontSize: '13px' } }, 'What the M&A data means for our investment thesis — auto-generated from ' + all.length.toLocaleString() + ' deals, updated ' + (data.lastUpdated || 'weekly'))
+                            h('div', { style: { color: '#9CA3AF', fontSize: '13px' } }, 'What the M&A data means for our investment thesis — auto-generated from ' + all.length.toLocaleString() + ' relevant deals' + (data.excludedDeals ? ' (' + data.excludedDeals + ' ignored for relevance)' : '') + ', updated ' + (data.lastUpdated || 'weekly'))
                         )
                     )
                 ),
@@ -1176,7 +1176,7 @@
                                     h('td', null, d.tgt, ' (', d.tgtC, ')'),
                                     h('td', null, d.sector || '—'),
                                     h('td', null, d.v ? '$' + d.v.toLocaleString() : '—'),
-                                    h('td', null, h('span', { className: (d.status || 'BLOCKED') === 'IGNORED' ? 'badge-ignored' : 'badge-blocked', style: { fontSize: '11px', padding: '3px 10px' } }, d.status || 'BLOCKED')),
+                                    h('td', null, h('span', { className: 'badge-blocked', style: { fontSize: '11px', padding: '3px 10px' } }, 'BLOCKED')),
                                     h('td', { style: { fontSize: '12px', color: '#9CA3AF' } }, (d.regulators || []).join(', ') || '—')
                                 )
                             )
@@ -1184,12 +1184,9 @@
                     ),
                     // Reason details
                     ...blocked.map((d, i) => {
-                        const isIgnored = (d.status || 'BLOCKED') === 'IGNORED';
-                        const accent = isIgnored ? 'rgba(255,189,72,' : 'rgba(239,68,68,';
-                        const accentSolid = isIgnored ? '#FFBD48' : '#EF4444';
-                        return h('div', { key: 'reason-' + i, style: { marginTop: '16px', padding: '12px 16px', background: accent + '0.06)', borderRadius: '8px', border: '1px solid ' + accent + '0.2)' } },
+                        return h('div', { key: 'reason-' + i, style: { marginTop: '16px', padding: '12px 16px', background: 'rgba(239,68,68,0.06)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)' } },
                             h('p', { style: { fontSize: '13px', color: '#D1D5DB', lineHeight: '1.6' } },
-                                h('strong', { style: { color: accentSolid } }, d.acq + ' / ' + d.tgt + ' ($' + (d.v / 1000).toFixed(0) + 'B): '),
+                                h('strong', { style: { color: '#EF4444' } }, d.acq + ' / ' + d.tgt + ' ($' + (d.v / 1000).toFixed(0) + 'B): '),
                                 d.reason || 'Excluded from aggregates.'
                             )
                         );
@@ -1434,7 +1431,7 @@
                     h('div', null,
                         h('div', { style: { fontSize: '18px', fontWeight: 700, color: '#F9FAFB' } }, 'Complete M&A Database'),
                         h('div', { style: { fontSize: '13px', color: '#9CA3AF', marginTop: '4px' } },
-                            sorted.length.toLocaleString() + ' deals' + (search ? ' matching "' + search + '"' : '') + ' · Source: EPIC Photonics Index · Last updated: ' + (data.lastUpdated || '—')
+                            sorted.length.toLocaleString() + ' deals' + (search ? ' matching "' + search + '"' : '') + (data.excludedDeals ? ' · ' + data.excludedDeals + ' ignored (relevance)' : '') + ' · Source: EPIC Photonics Index · Last updated: ' + (data.lastUpdated || '—')
                         )
                     ),
                     h('input', {
@@ -1500,7 +1497,17 @@
                 ),
                 h('div', { style: { marginTop: '8px', fontSize: '11px', color: '#6B7280' } },
                     h('a', { href: 'https://photonics-index.org/ma/', target: '_blank', style: { fontSize: '11px' } }, 'EPIC Photonics Index — photonics-index.org/ma')
-                )
+                ),
+                data.excludedDeals ? h('div', { style: { marginTop: '16px', padding: '16px 24px', maxWidth: '900px', margin: '16px auto 0', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' } },
+                    h('div', { style: { fontSize: '11px', fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' } }, 'Data Integrity'),
+                    h('div', { style: { fontSize: '11px', color: '#6B7280', lineHeight: '1.7' } },
+                        'The EPIC Photonics Index source dataset contains ' + (data.totalUnfiltered || data.total + data.excludedDeals).toLocaleString() + ' M&A records spanning photonics, semiconductor, and adjacent sectors. ',
+                        'To improve relevance, ' + data.excludedDeals + ' deals were ignored (pure software, pharma, fintech, and other non-hardware transactions) and excluded from all aggregates. ',
+                        'Classification was performed using a two-stage process: keyword-based matching for clear-cut cases, followed by AI-assisted review (Anthropic Claude Haiku) for ambiguous deals. ',
+                        'This dashboard shows the remaining ' + data.total.toLocaleString() + ' deals deemed relevant to photonics, semiconductors, and adjacent hardware. ',
+                        'Only ~25\u201330% of deals disclose transaction values; all value-based metrics reflect this disclosed subset only.'
+                    )
+                ) : null
             );
 
         // Render
