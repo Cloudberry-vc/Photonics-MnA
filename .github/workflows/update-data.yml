@@ -32,7 +32,11 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
+          echo "=== Files modified ==="
+          git status --short
           git add data.json review.json scraper/classified_deals.json scraper/previous_alldeals.json
+          echo "=== Staged changes ==="
+          git diff --staged --stat
           git diff --staged --quiet || echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Commit and push
