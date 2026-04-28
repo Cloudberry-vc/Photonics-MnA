@@ -43,9 +43,26 @@
             display: flex; justify-content: space-between; align-items: flex-start; gap: 40px;
         }
         .header-left { display: flex; align-items: center; gap: 20px; flex: 1; }
-        .berry-icon { height: 36px; width: auto; flex-shrink: 0; display: block; }
-        .berry-link { display: inline-flex; align-items: center; text-decoration: none; transition: opacity 0.15s; }
-        .berry-link:hover { opacity: 0.8; }
+        .berry-icon { height: 50px; width: auto; flex-shrink: 0; }
+        .brand-bar {
+            background-color: #1A1E3F;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 8px 20px;
+        }
+        .brand-bar-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: flex-end; }
+        .brand-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: #F9FAFB; text-decoration: none;
+            font-size: 13px; font-weight: 600; letter-spacing: 0.4px;
+            padding: 4px 8px; border-radius: 4px;
+            transition: background-color 0.15s, color 0.15s;
+        }
+        .brand-link:hover { background-color: rgba(255,255,255,0.06); color: #FFBD48; }
+        .brand-icon { height: 20px; width: auto; display: block; }
+        .brand-name { color: inherit; }
+        .brand-vc { color: #178287; font-weight: 700; margin-left: -2px; }
+        .brand-link:hover .brand-vc { color: #FFBD48; }
+        .brand-arrow { font-size: 11px; opacity: 0.7; margin-left: 2px; }
         .header-text h1 { font-size: 32px; font-weight: 700; color: #F9FAFB; margin-bottom: 8px; }
         .header-text p { font-size: 13px; color: #9CA3AF; font-weight: 500; letter-spacing: 0.3px; }
         .header-stats { display: flex; gap: 30px; flex-wrap: wrap; justify-content: flex-end; }
@@ -457,8 +474,16 @@
                 name + ' ' + (percent * 100).toFixed(0) + '%');
         };
 
-        const BerryIcon = () => h('a', { href: 'https://www.cloudberry.vc', target: '_blank', rel: 'noopener noreferrer', className: 'berry-link', 'aria-label': 'Cloudberry VC' },
-            h('img', { src: 'cloudberryvc-logomark-light.svg', className: 'berry-icon', alt: 'Cloudberry VC' })
+        const BerryIcon = () => h('img', { src: 'cloudberryvc-icon.svg', className: 'berry-icon', alt: 'Cloudberry VC' });
+        const BrandBar = () => h('div', { className: 'brand-bar' },
+            h('div', { className: 'brand-bar-content' },
+                h('a', { href: 'https://www.cloudberry.vc', target: '_blank', rel: 'noopener noreferrer', className: 'brand-link', 'aria-label': 'Cloudberry VC' },
+                    h('img', { src: 'cloudberryvc-icon.svg', className: 'brand-icon', alt: '' }),
+                    h('span', { className: 'brand-name' }, 'Cloudberry'),
+                    h('span', { className: 'brand-vc' }, 'VC'),
+                    h('span', { className: 'brand-arrow' }, '↗')
+                )
+            )
         );
         const BerryIconSmall = () => h('img', { src: 'cloudberryvc-icon.svg', className: 'footer-berry', alt: 'Cloudberry VC' });
 
@@ -519,6 +544,7 @@
             if (!data) return h('div', { className: 'loading-container' }, h('div', { className: 'loading-text' }, 'Error loading data'));
 
             return h(React.Fragment, null,
+                h(BrandBar),
                 h(Header, { data }),
                 h(TabBar, { activeTab, setActiveTab, showReview }),
                 h('div', { className: 'container' },
