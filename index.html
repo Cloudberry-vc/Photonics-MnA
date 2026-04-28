@@ -43,7 +43,9 @@
             display: flex; justify-content: space-between; align-items: flex-start; gap: 40px;
         }
         .header-left { display: flex; align-items: center; gap: 20px; flex: 1; }
-        .berry-icon { height: 50px; width: auto; flex-shrink: 0; }
+        .berry-icon { height: 36px; width: auto; flex-shrink: 0; display: block; }
+        .berry-link { display: inline-flex; align-items: center; text-decoration: none; transition: opacity 0.15s; }
+        .berry-link:hover { opacity: 0.8; }
         .header-text h1 { font-size: 32px; font-weight: 700; color: #F9FAFB; margin-bottom: 8px; }
         .header-text p { font-size: 13px; color: #9CA3AF; font-weight: 500; letter-spacing: 0.3px; }
         .header-stats { display: flex; gap: 30px; flex-wrap: wrap; justify-content: flex-end; }
@@ -455,7 +457,9 @@
                 name + ' ' + (percent * 100).toFixed(0) + '%');
         };
 
-        const BerryIcon = () => h('img', { src: 'cloudberryvc-icon.svg', className: 'berry-icon', alt: 'Cloudberry VC' });
+        const BerryIcon = () => h('a', { href: 'https://www.cloudberry.vc', target: '_blank', rel: 'noopener noreferrer', className: 'berry-link', 'aria-label': 'Cloudberry VC' },
+            h('img', { src: 'cloudberryvc-logomark-light.svg', className: 'berry-icon', alt: 'Cloudberry VC' })
+        );
         const BerryIconSmall = () => h('img', { src: 'cloudberryvc-icon.svg', className: 'footer-berry', alt: 'Cloudberry VC' });
 
         const RegionBadge = ({ region }) => {
